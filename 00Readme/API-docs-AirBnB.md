@@ -1,8 +1,8 @@
-# AIR BNB GROUP 3 API
+# AIR BNB GROUP 3 API - Oasis
 
 ## Database Schema Design
 
-# https://dbdiagram.io/d/Air-BNB-6791a44f37f5d6cbeba1898f
+# https://dbdiagram.io/d/Oasis-6791b2ba37f5d6cbeba2abba
 
 ## API Documentation
 
@@ -1376,7 +1376,7 @@ Return spots filtered by query parameters.
 * Require Authentication: false
 * Request
   * Method: GET
-  * Route path: ?
+  * Route path: ?spots=page=1&size=2
   * Query Parameters
     * page: integer, minimum: 1, default: 1
     * size: integer, minimum: 1, maximum: 20, default: 20

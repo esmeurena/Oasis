@@ -2,7 +2,8 @@
 
 ## Database Schema Design
 
-# https://dbdiagram.io/d/Oasis-6791b2ba37f5d6cbeba2abba
+<img width="749" alt="Screenshot 2025-01-27 at 9 05 34 PM" src="https://github.com/user-attachments/assets/6da0dfca-3778-4789-8ddf-8c3a3d13c3a7" />
+
 
 ## API Documentation
 

@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "sequelize": "sequelize",
     "sequelize-cli": "sequelize-cli",
@@ -11,10 +11,6 @@
     "build": "node psql-setup-script.js",
     "db:reset": "rm -rf ./db/dev.db && npx dotenv sequelize db:migrate && npx dotenv sequelize db:seed:all"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
@@ -36,5 +32,9 @@
     "dotenv-cli": "^8.0.0",
     "nodemon": "^3.1.9",
     "sqlite3": "^5.1.7"
-  }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

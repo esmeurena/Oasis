@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Spot.belongsTo(model.User, {
+      Spot.belongsTo(models.User, {
         foreignKey: "id",
         onDelete: "CASCADE"
       })

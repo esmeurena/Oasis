@@ -16,7 +16,8 @@ module.exports = {
       },
       ownerId: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: { model: 'Users', key: 'id' }
       },
       address: {
         type: Sequelize.STRING(100),
@@ -48,7 +49,7 @@ module.exports = {
         unique: true
       },
       description: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING(256)
       },
       price: {
         type: Sequelize.DECIMAL,
@@ -57,7 +58,7 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
         allowNull: false,

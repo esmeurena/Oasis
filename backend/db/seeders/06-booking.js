@@ -11,10 +11,11 @@ console.log(3);
 module.exports = {
   async up (queryInterface, Sequelize) {
     await Booking.bulkCreate([
-    //   {
-    //     startDate: '2025-2-1',
-    //     endDate: '2025-2-5'
-    //   },
+      // {
+      //   spotId:1,
+      //   startDate: 2025-2-1,
+      //   endDate: 2025-2-5
+      // },
     //   {
     //     startDate: "2025-10-12",
     //     endDate: "2026-10-12"

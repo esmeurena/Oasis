@@ -13,6 +13,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { Spot } = require('../../db/models');
 const { User } = require('../../db/models');
 const { Review } = require('../../db/models');
+const { SpotImage, ReviewImage }= require('../../db/models');
 
 const router = express.Router();
 
@@ -76,9 +77,7 @@ router.get('/:spotid/reviews', async (req, res, next) => {
         id: spotId
     },
     })
-    return res.json(reviews)
-
-    return res.json("hello there")
+    return res.json(reviews);
 });
 
 // Spot POST Method 
@@ -99,11 +98,38 @@ router.post('/', async (req, res, next) => {
 });
 
 router.post('/:spotId/images', async (req, res, next) => {
-    return res.json("hello there")
+    try {
+        const spot = req.params.id;
+        const {spotId, url, preview} =req.body
+        // const spotImages = await SpotImage.findAll({
+        //     where:{
+        //         spotId: spotId
+        //     }
+        // })
+        if(spotId <= 0 || !url || preview === undefined){
+            throw new Error("that your URL is correct ")
+        }else{
+            const newImage =  await SpotImage.create({spotId:spot, url, preview})
+            return res.json(newImage)
+        }
+    } catch (error) {
+        next(error)
+    }
 });
 
 router.post('/:spotid/reviews', async (req, res, next) => {
-    return res.json("hello there")
+    try {
+        const spot = req.params.id;
+        const {spotId, userId, review, stars} =req.body
+        
+        if(spotId <= 0 || !review || !stars ){
+            throw new Error("you are missing information")
+        }
+        const newReview =  await Review.create({spotId:spot, url, preview})
+        return res.json(newImage)
+    } catch (error) {
+        next(error)
+    }
 });
 
 

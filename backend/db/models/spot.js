@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     ownerId: {
       type: DataTypes.INTEGER,
-      foreignKey: true
+      // foreignKey: true
     },
     address: {
       type: DataTypes.STRING,
@@ -79,15 +79,11 @@ module.exports = (sequelize, DataTypes) => {
     price: {
       type: DataTypes.DECIMAL,
       allowNull: false,
+      defaultValue: 0,
       validate:{
-        defaultValue: 0,
         min:0
       }
-    },
-    previewImage: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
+    }
   }, {
     sequelize,
     modelName: 'Spot'

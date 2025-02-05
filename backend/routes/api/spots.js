@@ -12,6 +12,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 // Sequelize Imports 
 const { Spot } = require('../../db/models');
 const { User } = require('../../db/models');
+const { Review } = require('../../db/models');
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
     try {
 
-        const spots = await Spot.findall();
+        const spots = await Spot.findAll();
 
         if (spots) {
             return res.json(spots)
@@ -35,16 +36,17 @@ router.get('/', async (req, res, next) => {
 
 router.get('/current', async (req, res, next) => {
     try {
-        const currentUser = await req.body.ownerId
+        const currentUser = await req.user.id
         console.log(currentUser)
         
-        const userSpots = await Spot.findall({
+        const userSpots = await Spot.findAll({
             where: {
                 id: currentUser
             },
             
         }
-        )
+        );
+        return res.json(userSpots);
         
     } catch (error) {
         next(error)
@@ -55,7 +57,7 @@ router.get('/:spotid', async (req, res, next) => {
     try {
         const spotId = req.params.id;
 
-        const spot = await Spot.findByPk(spotId);
+        const spot = await Spot.findByPk(spotid);
 
         if(spot){
             return res.json(spot)
@@ -68,6 +70,13 @@ router.get('/:spotid', async (req, res, next) => {
 router.get('/:spotid/reviews', async (req, res, next) => {
     const spotId = req.params.id;
     const spot = await Spot.findByPk(spotId);
+    const reviews = await Review.findAll({
+        where: 
+    {
+        id: spotId
+    },
+    })
+    return res.json(reviews)
 
     return res.json("hello there")
 });
@@ -76,12 +85,12 @@ router.get('/:spotid/reviews', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     try {
-        const {address, city, state, country, lat, lang, name, description, price, previewImage} = req.body
+        const {address, city, state, country, lat, lng, name, description, price, previewImage} = req.body
         
-        if(!address|| !city|| !state|| !country|| !lat|| !lang|| !name|| !price|| !previewImage){
+        if(!address|| !city|| !state|| !country|| !lat|| !lng|| !name|| !price|| !previewImage){
             throw new Error("please check your data entered")
         }else{
-            const newSpot = await Spot.create({address, city, state, country, lat, lang, name, description, price, previewImage});
+            const newSpot = await Spot.create({address, city, state, country, lat, lng, name, description, price, previewImage});
             return res.json(newSpot)
         }
     } catch (error) {
@@ -102,22 +111,22 @@ router.post('/:spotid/reviews', async (req, res, next) => {
 router.put('/:spotId', async (req, res, next) => {
     try {
         const spotId = req.params.id;
-        const {address, city, state, country, lat, lang, name, description, price, previewImage} = req.body;
+        const {address, city, state, country, lat, lng, name, description, price, previewImage} = req.body;
 
         const spotToUpdate = await Spot.findByPk(spotId);
         if(!spotToUpdate){
             throw new Error("no user to be found")
         }else{
-            spotToUpdate.update({address, city, state, country, lat, lang, name, description, price, previewImage})
+            spotToUpdate.update({address, city, state, country, lat, lng, name, description, price, previewImage})
             return res.json({spot: spotToUpdate})
         }
     } catch (error) {
         next(error)
     }
 });
-router.delete('/', async (req, res, next) => {
+router.delete('/:spotId', async (req, res, next) => {
     try {
-        const spotId = req.params.id
+        const spotId = req.params.id;
 
         const spotToDelete = await Spot.findByPk(spotId);
         if(spotToDelete){

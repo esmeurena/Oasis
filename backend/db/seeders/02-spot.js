@@ -1,18 +1,19 @@
 'use strict';
-
+console.log(1);
 const { Spot } = require('../models');
 const bcrypt = require("bcryptjs");
-
+console.log(2);
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
-
+console.log(3);
 module.exports = {
   async up (queryInterface, Sequelize) {
     await Spot.bulkCreate([
       {
-        ownerId: 123,
+        id: 1,
+        ownerId: 1,
         address: '123 First St',
         city: 'San Diego',
         state: 'California',
@@ -22,10 +23,9 @@ module.exports = {
         name: 'Airbnb Name',
         description: 'Airbnb Name Description',
         price: 123.45,
-        previewImage: 'https://www.image.com/',
       },
       {
-        ownerId: 1234,
+        ownerId: 1,
         address: '1234 Second St',
         city: 'Los Angeles',
         state: 'California',
@@ -35,10 +35,9 @@ module.exports = {
         name: 'Airbnb Second Name',
         description: 'Airbnb Second Name Description',
         price: 123.55,
-        previewImage: 'https://www.image.com/',
       },
       {
-        ownerId: 12345,
+        ownerId: 2,
         address: '12345 Third St',
         city: 'San Francisco',
         state: 'California',
@@ -48,7 +47,6 @@ module.exports = {
         name: 'Airbnb Third Name',
         description: 'Airbnb Third Name Description',
         price: 123.65,
-        previewImage: 'https://www.image.com/',
       },
     ], { validate: true });
   },
@@ -57,7 +55,8 @@ module.exports = {
     options.tableName = 'Spots';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      name: { [Op.in]: ['Airbnb Name', 'Airbnb Second Name', 'Airbnb Third Name'] }
+      // name: { [Op.in]: ['Airbnb Name', 'Airbnb Second Name', 'Airbnb Third Name'] }
     }, {});
   }
 };
+

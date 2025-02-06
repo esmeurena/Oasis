@@ -1,7 +1,5 @@
 'use strict';
-
 const { Model, Validator } = require('sequelize');
-
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
@@ -10,18 +8,18 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'cascade',
         hooks: true
       });
-      // User.hasMany(models.Booking, {
-      //   foreignKey: 'userId',
-      //   onDelete: 'cascade',
-      //   hooks: true
-      // });
-      // User.hasMany(models.Review, {
-      //   foreignKey: 'userId',
-      //   onDelete: 'cascade',
-      //   hooks: true
-      // });
+      User.hasMany(models.Booking, {
+        foreignKey: 'userId',
+        onDelete: 'cascade',
+        hooks: true
+      });
+      User.hasMany(models.Review, {
+        foreignKey: 'userId',
+        onDelete: 'cascade',
+        hooks: true
+      });
     }
-  }
+  };
 
   User.init(
     {

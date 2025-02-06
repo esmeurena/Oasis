@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+
+      Review.hasOne(models.ReviewImage, {
+        foreignKey: "reviewId",
+        onDelete:"CASCADE"
+      });
       // Each Review belongs to a Spot
       Review.belongsTo(models.Spot, {
         foreignKey: "spotId",
@@ -22,12 +27,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Review.init({
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false
-    },
     spotId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -39,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       references: { model: 'Users', key: 'id' }
     },
     review: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         len: [1, 200] 

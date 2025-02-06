@@ -14,18 +14,22 @@ module.exports = {
       {
         spotId: 1,
         url: "images.com",
+        preview: true
       },
       {
         spotId: 2,
         url: "dog.com",
+        preview: true
       },
       {
         spotId: 3,
         url: "youtube.com",
+        preview: true
       },
       {
         spotId: 2,
         url: "google.com",
+        preview: true
       }
     ], { validate: true });
   },

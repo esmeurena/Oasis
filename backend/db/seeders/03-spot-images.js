@@ -12,20 +12,21 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await SpotImage.bulkCreate([
       {
-        spotId:1,
-        url: "image.com",
-        preview: true
+        spotId: 1,
+        url: "images.com",
       },
       {
-        spotId:2,
-        url: "image.com",
-        preview: true
+        spotId: 2,
+        url: "dog.com",
       },
       {
-        spotId:2,
-        url: "image.com",
-        preview: true
+        spotId: 3,
+        url: "youtube.com",
       },
+      {
+        spotId: 2,
+        url: "google.com",
+      }
     ], { validate: true });
   },
 
@@ -37,4 +38,3 @@ module.exports = {
     }, {});
   }
 };
-

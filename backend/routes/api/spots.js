@@ -58,7 +58,7 @@ router.get('/:spotid', async (req, res, next) => {
     try {
         const spotId = req.params.id;
 
-        const spot = await Spot.findByPk(spotid);
+        const spot = await Spot.findByPk(spotId);
 
         if(spot){
             return res.json(spot)
@@ -69,15 +69,19 @@ router.get('/:spotid', async (req, res, next) => {
 });
 
 router.get('/:spotid/reviews', async (req, res, next) => {
-    const spotId = req.params.id;
-    const spot = await Spot.findByPk(spotId);
-    const reviews = await Review.findAll({
+    try {
+        const spotId = req.params.id;
+        const spot = await Spot.findByPk(spotId);
+        const reviews = await Review.findAll({
         where: 
     {
         id: spotId
     },
     })
     return res.json(reviews);
+    } catch (error) {
+        next(error)
+    }
 });
 
 // Spot POST Method 
@@ -120,17 +124,17 @@ router.post('/:spotId/images', async (req, res, next) => {
 router.post('/:spotid/reviews', async (req, res, next) => {
     try {
         const spot = req.params.id;
+        const currentUser = await req.user.id
         const {spotId, userId, review, stars} =req.body
-        
-        if(spotId <= 0 || !review || !stars ){
-            throw new Error("you are missing information")
+
+        if(spotId < 0 || (!userId && userId < 1 ) || !review || review === ""|| stars < 0){
+            throw new Error("that your URL is correct")
         }
-        const newReview =  await Review.create({spotId:spot, url, preview})
-        return res.json(newImage)
+        const newReview =  await Review.create({spotId:spot, userId , review, stars})
+        return res.json(newReview)
     } catch (error) {
         next(error)
-    }
-});
+    };
 
 
 // Spots PUT Method

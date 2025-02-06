@@ -15,12 +15,17 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'cascade',
         hooks: true
       })
-    }
-  }
+    };
+  };
   SpotImage.init({
-    spotId: DataTypes.INTEGER,
-    url: DataTypes.STRING,
-    preview: DataTypes.BOOLEAN
+    spotId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
   }, {
     sequelize,
     modelName: 'SpotImage',

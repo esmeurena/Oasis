@@ -13,7 +13,7 @@ module.exports = {
     await Spot.bulkCreate([
       {
         id: 1,
-        ownerId: 1,
+        userId: 1,
         address: '123 First St',
         city: 'San Diego',
         state: 'California',
@@ -25,7 +25,7 @@ module.exports = {
         price: 123.45,
       },
       {
-        ownerId: 1,
+        userId: 1,
         address: '1234 Second St',
         city: 'Los Angeles',
         state: 'California',
@@ -37,7 +37,7 @@ module.exports = {
         price: 123.55,
       },
       {
-        ownerId: 2,
+        userId: 2,
         address: '12345 Third St',
         city: 'San Francisco',
         state: 'California',

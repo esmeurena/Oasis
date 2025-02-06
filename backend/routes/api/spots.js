@@ -12,12 +12,15 @@ const { User } = require('../../db/models');
 const { Review } = require('../../db/models');
 const { SpotImage, ReviewImage }= require('../../db/models');
 const router = express.Router();
+
 // Spot GET Method 
 router.get('/', async (req, res, next) => {
     try {
-        const spots = await Spot.findAll();
+        const spots = await Spot.findAll({});
         if (spots) {
-            return res.json(spots)
+            console.log('here');
+            return res.json(spots);
+            
         } else {
             throw new Error("No Spots Found")
         }

@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
 
       Review.hasOne(models.ReviewImage, {
-        foreignKey: "id",
+        foreignKey: "reviewId",
         onDelete:"CASCADE"
       });
       // Each Review belongs to a Spot
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       references: { model: 'Users', key: 'id' }
     },
     review: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         len: [1, 200] 

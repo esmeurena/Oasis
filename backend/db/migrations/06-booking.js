@@ -30,7 +30,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       startDate: {
-        type: Sequelize.STING,
+        type: Sequelize.STRING,
         allowNull: false
       },
       endDate: {

@@ -11,27 +11,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       ReviewImage.belongsTo(models.Review,{
-        foreignKey: "id",
+        foreignKey: "reviewId",
         onDelete: "CASCADE"
       })
     }
   }
   ReviewImage.init({
-    spotId:{
-      type: DataTypes.INTEGER,
-      allowNull:false
-      },
-      userId:{ 
+      reviewId:{ 
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      startDate: {type: DataTypes.INTEGER,
+      url: {
+        type: DataTypes.STRING,
         allowNull: false
-      },
-      endDate: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-      },
+      }
     }, {
     sequelize,
     modelName: 'ReviewImage',

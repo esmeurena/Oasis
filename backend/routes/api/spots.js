@@ -11,18 +11,26 @@ const { Spot } = require('../../db/models');
 const { User } = require('../../db/models');
 const { Review } = require('../../db/models');
 const { SpotImage, ReviewImage }= require('../../db/models');
+const { ErrorHandler } = require('../../utils/errorHandler'); 
 const router = express.Router();
 
 // Spot GET Method 
 router.get('/', async (req, res, next) => {
     try {
-        const spots = await Spot.findAll({});
+        const spots = await Spot.findAll({
+            include: {
+                model: SpotImage,
+                where:{
+                    preview:true
+                }
+            }
+        });
         if (spots) {
-            console.log('here');
+            
             return res.json(spots);
             
         } else {
-            throw new Error("No Spots Found")
+            throw new ErrorHandler("No Spots Found", 404)
         }
     } catch (error) {
         next(error)
@@ -48,27 +56,55 @@ router.get('/current', async (req, res, next) => {
 });
 router.get('/:spotid', async (req, res, next) => {
     try {
-        const spotId = req.params.id;
+        const spotId = await req.params;
+        console.log(spot)
 
         const spot = await Spot.findByPk(spotId);
 
         if(spot){
             return res.json(spot)
+        } else {
+            throw new ErrorHandler("Spot not found",404)
         }
     } catch (error) {
         next(error)
     }
 });
 router.get('/:spotid/reviews', async (req, res, next) => {
+    try {
     const spotId = req.params.id;
     const spot = await Spot.findByPk(spotId);
     const reviews = await Review.findAll({
-        where: 
-    {
-        id: spotId
-    },
-    })
+
+    });
     return res.json(reviews);
+} catch (error) {
+    next(error);
+}
+})
+router.get('/:spotId/reviews/aggregate', async (req, res, next) => {
+    try {
+        const spotId = req.params.spotId;
+
+        const spot = await Spot.findByPk(spotId);
+        if (!spot) {
+            return res.status(404).json({ message: "Spot not found" });
+        }
+
+        // Aggregate review data
+        const reviews = await Review.findOne({
+            where: { spotId: spotId },
+            attributes: [
+                [sequelize.fn('AVG', sequelize.col('stars')), 'averageRating'],
+                [sequelize.fn('COUNT', sequelize.col('id')), 'totalReviews']
+            ]
+        });
+        const aggregatedData = reviews[0].dataValues;
+
+        return res.json(aggregatedData);
+    } catch (error) {
+        next(error);
+    }
 });
 // Spot POST Method 
 router.post('/', async (req, res, next) => {
@@ -76,32 +112,21 @@ router.post('/', async (req, res, next) => {
         const {address, city, state, country, lat, lng, name, description, price} = req.body
         
         if(!address|| !city|| !state|| !country|| !lat|| !lng|| !name|| !price){
-            throw new Error("please check your data entered")
+            throw new ErrorHandler("Please check your data entered", 400)
+        }else{
+            const newSpot = await Spot.create({address, city, state, country, lat, lng, name, description, price, userId: req.user.id});
+            return res.json(newSpot)
         }
-        
-        if(!req.user){throw new Error("The user was not authenticated");}
-        
-        const newSpot = await Spot.create({address, city, state, country, lat, lng, name, description, price, userId: req.user.id});
-        return res.json(newSpot)
-        
     } catch (error) {
         next(error)
     }
 });
 router.post('/:spotId/images', async (req, res, next) => {
     try {
-        const spot = req.params.id;
-        const {spotId, url, preview} =req.body
-        // const spotImages = await SpotImage.findAll({
-        //     where:{
-        //         spotId: spotId
-        //     }
-        // })
-        if(spotId <= 0 || !url || preview === undefined){
-            throw new Error("that your URL is correct or that sp")
-        }
-        const newImage =  await spotImage.create({spotId:spot, url, preview})
-        return res.json(newImage)
+        const spotId = req.params;
+
+        return res.json(spotId)
+        
     } catch (error) {
         next(error)
     }
@@ -110,12 +135,12 @@ router.post('/:spotid/reviews', async (req, res, next) => {
     try {
         const spot = req.params.id;
         const currentUser = await req.user.id
-        const {spotId, userId, review, stars} =req.body
+        const {spotId, userId, review, stars} = req.body
 
         if(spotId < 0 || (!userId && userId < 1 ) || !review || review === ""|| stars < 0){
-            throw new Error("that your URL is correct")
+            throw new ErrorHandler("Please check your data entered"), 400;
         }
-        const newReview =  await Review.create({spotId:spot, userId , review, stars})
+        const newReview =  await Review.create({spotId, userId: currentUser, review, stars})
         return res.json(newReview)
     } catch (error) {
         next(error)
@@ -128,9 +153,9 @@ router.put('/:spotId', async (req, res, next) => {
         const {address, city, state, country, lat, lng, name, description, price, previewImage} = req.body;
         const spotToUpdate = await Spot.findByPk(spotId);
         if(!spotToUpdate){
-            throw new Error("no user to be found")
+            throw new ErrorHandler("Spot not found", 404)
         }else{
-            spotToUpdate.update({address, city, state, country, lat, lng, name, description, price, previewImage})
+            await spotToUpdate.update({address, city, state, country, lat, lng, name, description, price, previewImage})
             return res.json({spot: spotToUpdate})
         }
     } catch (error) {
@@ -143,9 +168,9 @@ router.delete('/:spotId', async (req, res, next) => {
         const spotToDelete = await Spot.findByPk(spotId);
         if(spotToDelete){
             const deletedSpot = await spotToDelete.destroy();
-            return res.json({deletedSpot})
-        }else{
-            throw new Error("No spot found with provided ID")
+            return res.json({ message: "Spot deleted successfully"})
+        } else{
+            throw new ErrorHandler("No spot found with provided ID", 404)
         }
     } catch (error) {
         next(error)

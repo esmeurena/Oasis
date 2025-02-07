@@ -54,12 +54,20 @@ router.get('/current', async (req, res, next) => {
         next(error)
     }
 });
-router.get('/:spotid', async (req, res, next) => {
+router.get('/:spotId', async (req, res, next) => {
     try {
-        const spotId = await req.params;
-        console.log(spot)
+        const spotId = await req.params.spotId;
+        console.log(spotId)
 
-        const spot = await Spot.findByPk(spotId);
+        const spot = await Spot.findAll({
+                include: {
+                    model: SpotImage,
+                    where:{
+                        spotId: spotId,
+                        preview:true
+                    }
+                }
+            });
 
         if(spot){
             return res.json(spot)
@@ -70,12 +78,14 @@ router.get('/:spotid', async (req, res, next) => {
         next(error)
     }
 });
-router.get('/:spotid/reviews', async (req, res, next) => {
+router.get('/:spotId/reviews', async (req, res, next) => {
     try {
-    const spotId = req.params.id;
-    const spot = await Spot.findByPk(spotId);
+    const spotId = req.params.spotId;
+    // const spot = await Spot.findByPk(spotId);
     const reviews = await Review.findAll({
-
+        where:{
+            spotId: spotId
+        }
     });
     return res.json(reviews);
 } catch (error) {
@@ -123,25 +133,32 @@ router.post('/', async (req, res, next) => {
 });
 router.post('/:spotId/images', async (req, res, next) => {
     try {
-        const spotId = req.params;
-
-        return res.json(spotId)
+        const isSpotId = req.params.spotId;
+        const {spotId, url, preview} = req.body
+        console.log(spotId)
+        const newImage = SpotImage.create(spotId = isSpotId, url, preview)
+        return res.json(newImage)
         
     } catch (error) {
         next(error)
     }
 });
-router.post('/:spotid/reviews', async (req, res, next) => {
+router.post('/:spotId/reviews', async (req, res, next) => {
     try {
-        const spot = req.params.id;
+        const spot = req.params.spotId;
         const currentUser = await req.user.id
-        const {spotId, userId, review, stars} = req.body
-
-        if(spotId < 0 || (!userId && userId < 1 ) || !review || review === ""|| stars < 0){
-            throw new ErrorHandler("Please check your data entered"), 400;
-        }
-        const newReview =  await Review.create({spotId, userId: currentUser, review, stars})
+        const {spotId,review, stars} = req.body
+        const numSpot = Number(spot);
+        console.log(numSpot)
+        const newReview =  await Review.create(spotId=numSpot,review, stars)
         return res.json(newReview)
+    } catch (error) {
+        next(error)
+    }
+});
+router.post('/:spotId/bookings', async (req, res, next) => {
+    try {
+        
     } catch (error) {
         next(error)
     }
@@ -150,12 +167,12 @@ router.post('/:spotid/reviews', async (req, res, next) => {
 router.put('/:spotId', async (req, res, next) => {
     try {
         const spotId = req.params.id;
-        const {address, city, state, country, lat, lng, name, description, price, previewImage} = req.body;
+        const { userId, address, city, state, country, lat, lng, name, description, price, previewImage} = req.body;
         const spotToUpdate = await Spot.findByPk(spotId);
         if(!spotToUpdate){
             throw new ErrorHandler("Spot not found", 404)
         }else{
-            await spotToUpdate.update({address, city, state, country, lat, lng, name, description, price, previewImage})
+            await spotToUpdate.update({userId, address, city, state, country, lat, lng, name, description, price})
             return res.json({spot: spotToUpdate})
         }
     } catch (error) {
@@ -164,7 +181,7 @@ router.put('/:spotId', async (req, res, next) => {
 });
 router.delete('/:spotId', async (req, res, next) => {
     try {
-        const spotId = req.params.id;
+        const spotId = req.params.spotId;
         const spotToDelete = await Spot.findByPk(spotId);
         if(spotToDelete){
             const deletedSpot = await spotToDelete.destroy();

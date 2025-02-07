@@ -73,14 +73,17 @@ router.get('/:spotid/reviews', async (req, res, next) => {
 // Spot POST Method 
 router.post('/', async (req, res, next) => {
     try {
-        const {address, city, state, country, lat, lng, name, description, price, previewImage} = req.body
+        const {address, city, state, country, lat, lng, name, description, price} = req.body
         
-        if(!address|| !city|| !state|| !country|| !lat|| !lng|| !name|| !price|| !previewImage){
+        if(!address|| !city|| !state|| !country|| !lat|| !lng|| !name|| !price){
             throw new Error("please check your data entered")
-        }else{
-            const newSpot = await Spot.create({address, city, state, country, lat, lng, name, description, price, previewImage});
-            return res.json(newSpot)
         }
+        
+        if(!req.user){throw new Error("The user was not authenticated");}
+        
+        const newSpot = await Spot.create({address, city, state, country, lat, lng, name, description, price, userId: req.user.id});
+        return res.json(newSpot)
+        
     } catch (error) {
         next(error)
     }

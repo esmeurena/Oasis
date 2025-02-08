@@ -1,5 +1,6 @@
 const express = require('express');
 const { ReviewImage, Review } = require('../../db/models');
+const { ErrorHandler } = require('../../utils/errorHandler');
 const router = express.Router();
 
 //POST Add an Image to a Review based on the Review's id
@@ -9,12 +10,12 @@ router.post('/reviews/:reviewId/images', async (req, res, next) => {
 
     try {
         if(!url){
-            throw new Error('URL is required');
+            throw new ErrorHandler('URL is required', 400);
         }
 
         const review = await Review.findByPk(reviewId);
         if(!review){
-            throw new Error('Review not found');
+            throw new ErrorHandler('Review not found', 404);
         }
 
         const newReviewImage = await ReviewImage.create({
@@ -35,7 +36,7 @@ router.delete('/:reviewImageId', async (req, res, next) => {
     try {
         const reviewImageToDelete = await ReviewImage.findByPk(reviewImageId);
         if(!reviewImageToDelete){
-            throw new Error('Review Image not found');
+            throw new ErrorHandler('Review Image not found', 404);
         }
 
         await reviewImageToDelete.destroy();
@@ -47,11 +48,11 @@ router.delete('/:reviewImageId', async (req, res, next) => {
 
 // Error handling middleware
 router.use((err, req, res, next) => {
-    const errorMessage = err.message;
-    res.status(500);
-    return res.json({
+    const statusCode = err.statusCode || 500;
+    const errorMessage = err.message || "Internal Server Error";
+    res.status(statusCode).json({
         message: errorMessage,
-        status: res.status,
+        status: statusCode
     });
 });
 

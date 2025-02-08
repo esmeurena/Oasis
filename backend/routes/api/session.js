@@ -13,7 +13,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 // Sequelize Imports 
 const { User } = require('../../db/models');
-
+const { ErrorHandler } = require('../../utils/errorHandler');
 
 const router = express.Router();
 
@@ -32,38 +32,36 @@ const validateLogin = [
 
 // Log in
 router.post('/', validateLogin, async (req, res, next) => {
-    const { credential, password } = req.body;
-
-    const user = await User.unscoped().findOne({
-        where: {
-            [Op.or]: {
-                username: credential,
-                email: credential
+    try {
+        const { credential, password } = req.body;
+        const user = await User.unscoped().findOne({
+            where: {
+                [Op.or]: {
+                    username: credential,
+                    email: credential
+                }
             }
+        });
+
+        if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
+            throw new ErrorHandler('The provided credentials were invalid.', 401);
         }
-    });
 
-    if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
-        const err = new Error('Login failed');
-        err.status = 401;
-        err.title = 'Login failed';
-        err.errors = { credential: 'The provided credentials were invalid.' };
-        return next(err);
+        const safeUser = {
+            id: user.id,
+            email: user.email,
+            username: user.username,
+        };
+
+        await setTokenCookie(res, safeUser);
+
+        return res.json({
+            user: safeUser
+        });
+    } catch (error) {
+        next(error);
     }
-
-    const safeUser = {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-    };
-
-    await setTokenCookie(res, safeUser);
-
-    return res.json({
-        user: safeUser
-    });
 });
-
 
 // Log out
 router.delete('/', (_req, res) => {
@@ -85,6 +83,16 @@ router.get('/', (req, res) => {
             user: safeUser
         });
     } else return res.json({ user: null });
+});
+
+// Error handling middleware
+router.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const errorMessage = err.message || "Internal Server Error";
+    res.status(statusCode).json({
+        message: errorMessage,
+        status: statusCode
+    });
 });
 
 module.exports = router;

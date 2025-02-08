@@ -11,14 +11,29 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 // Sequelize Imports 
 const { Review } = require('../../db/models');
+const { ReviewImage } = require('../../db/models');
 const { Spot } = require('../../db/models');
 const { User } = require('../../db/models');
 const { ErrorHandler } = require('../../utils/errorHandler');
 
 const router = express.Router();
-router.get('/', async (req, res, next) => {
+
+/*
+ *  GET all reviews of current user
+ *  /reviews/session
+ * 
+ */
+router.get('/current', async (req, res, next) => {
     try {
-        const reviews = await Review.findAll();
+        const userId = await req.user.id;
+
+        if (!userId) {
+            throw new ErrorHandler("User not found", 404);
+        }
+
+        const reviews = await Review.findAll({
+            where: { userId }
+        });
 
         if (reviews){
             return res.json(reviews);
@@ -30,47 +45,80 @@ router.get('/', async (req, res, next) => {
     }
 
 });
-router.get('/spots/:spotId', async (req, res, next) => {
-    try {
-        const spotId = req.params.spotId;
 
-        const spot = await Spot.findByPk(spotId);
-        if (!spot) {
-            throw new ErrorHandler("Spot not found", 404);
+// router.get('/spots/:spotId', async (req, res, next) => {
+//     try {
+//         const spotId = req.params.spotId;
+
+//         const spot = await Spot.findByPk(spotId);
+//         if (!spot) {
+//             throw new ErrorHandler("Spot not found", 404);
+//         }
+
+//         const reviews = await Review.findAll({
+//             where: { spotId }
+//         });
+
+//         return res.json(reviews);
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+// router.post('/spots/:spotId', requireAuth, async (req, res, next) => {
+//     try {
+//         const { review, stars } = req.body;
+//         const spotId = req.params.spotId;
+//         const userId = req.user.id;
+
+//         if (!review || !stars || stars < 1 || stars > 5) {
+//             throw new ErrorHandler("Review text and star rating (1-5) is required.", 400);
+//         }
+
+//         const spot = await Spot.findByPk(spotId);
+//         if (!spot) {
+//             throw new ErrorHandler("Spot not found", 404);
+//         }
+
+//         const newReview = await Review.create({ userId, spotId, review, stars });
+
+//         return res.status(201).json(newReview);
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
+/*
+ *  POST a ReviewImage
+ *  /reviews/:reviewId/images
+ * 
+ */
+router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
+    try {
+        const { url } = req.body;
+        const reviewId = req.user.id;
+
+        if (!url ) {
+            throw new ErrorHandler("No url detected for Image.", 404);
         }
 
-        const reviews = await Review.findAll({
-            where: { spotId }
-        });
+        const review = await Review.findByPk(reviewId);
+        if (!review) {
+            throw new ErrorHandler("Review not found", 404);
+        }
 
-        return res.json(reviews);
+        const newReviewImage = await ReviewImage.create({ reviewId, url });
+
+        return res.status(201).json(newReviewImage);
     } catch (error) {
         next(error);
     }
 });
-router.post('/spots/:spotId', requireAuth, async (req, res, next) => {
-    try {
-        const { review, stars } = req.body;
-        const spotId = req.params.spotId;
-        const userId = req.user.id;
 
-        if (!review || !stars || stars < 1 || stars > 5) {
-            throw new ErrorHandler("Review text and star rating (1-5) is required.", 400);
-        }
-
-        const spot = await Spot.findByPk(spotId);
-        if (!spot) {
-            throw new ErrorHandler("Spot not found", 404);
-        }
-
-        const newReview = await Review.create({ userId, spotId, review, stars });
-
-        return res.status(201).json(newReview);
-    } catch (error) {
-        next(error);
-    }
-});
-// PUT (update) a review
+/*
+ *  PUT (update) a review
+ *  /reviews/:reviewId
+ * 
+ */
 router.put('/:reviewId', requireAuth, async (req, res, next) => {
     try {
         const reviewId = req.params.reviewId;
@@ -94,7 +142,11 @@ router.put('/:reviewId', requireAuth, async (req, res, next) => {
     }
 });
 
-// DELETING a review
+/*
+ *  DELETE a review
+ *  /reviews/:reviewId
+ * 
+ */
 router.delete('/:reviewId', requireAuth, async (req, res, next) => {
     try {
         const reviewId = req.params.reviewId;

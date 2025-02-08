@@ -13,7 +13,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { Review } = require('../../db/models');
 const { Spot } = require('../../db/models');
 const { User } = require('../../db/models');
-
+const { ErrorHandler } = require('../../utils/errorHandler');
 
 const router = express.Router();
 router.get('/', async (req, res, next) => {
@@ -23,7 +23,7 @@ router.get('/', async (req, res, next) => {
         if (reviews){
             return res.json(reviews);
         } else {
-            throw new Error("No reviews found");
+            throw new ErrorHandler("No reviews found", 404);
         }
     } catch (error) {
         next(error);
@@ -36,7 +36,7 @@ router.get('/spots/:spotId', async (req, res, next) => {
 
         const spot = await Spot.findByPk(spotId);
         if (!spot) {
-            return res.status(404).json({ message: "Spot not found" });
+            throw new ErrorHandler("Spot not found", 404);
         }
 
         const reviews = await Review.findAll({
@@ -55,12 +55,12 @@ router.post('/spots/:spotId', requireAuth, async (req, res, next) => {
         const userId = req.user.id;
 
         if (!review || !stars || stars < 1 || stars > 5) {
-            throw new Error("Review text and star rating (1-5) is required.");
+            throw new ErrorHandler("Review text and star rating (1-5) is required.", 400);
         }
 
         const spot = await Spot.findByPk(spotId);
         if (!spot) {
-            return res.status(404).json({ message: "Spot not found" });
+            throw new ErrorHandler("Spot not found", 404);
         }
 
         const newReview = await Review.create({ userId, spotId, review, stars });
@@ -79,11 +79,11 @@ router.put('/:reviewId', requireAuth, async (req, res, next) => {
 
         const reviewToUpdate = await Review.findByPk(reviewId);
         if (!reviewToUpdate) {
-            throw new Error("Review not found");
+            throw new ErrorHandler("Review not found", 404);
         }
 
         if (reviewToUpdate.userId !== userId) {
-            return res.status(403).json({ message: "You are not authorized to update this review" });
+            throw new ErrorHandler("You are not authorized to update this review", 403);
         }
 
         await reviewToUpdate.update({ review, stars });
@@ -102,11 +102,11 @@ router.delete('/:reviewId', requireAuth, async (req, res, next) => {
 
         const reviewToDelete = await Review.findByPk(reviewId);
         if (!reviewToDelete) {
-            throw new Error("Review not found");
+            throw new ErrorHandler("Review not found", 404);
         }
 
         if (reviewToDelete.userId !== userId) {
-            return res.status(403).json({ message: "You are not authorized to delete this review" });
+            throw new ErrorHandler("You are not authorized to delete this review", 403);
         }
 
         await reviewToDelete.destroy();
@@ -119,11 +119,11 @@ router.delete('/:reviewId', requireAuth, async (req, res, next) => {
 
 // Error Handling
 router.use((err, req, res, next) => {
-    const errorMessage = err.message;
-    res.status(500);
-    return res.json({
+    const statusCode = err.statusCode || 500;
+    const errorMessage = err.message || "Internal Server Error";
+    res.status(statusCode).json({
         message: errorMessage,
-        status: res.status
+        status: statusCode
     });
 });
 

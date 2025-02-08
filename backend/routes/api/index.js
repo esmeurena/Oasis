@@ -1,4 +1,3 @@
-
 // GET /api/restore-user
 
 //express imports
@@ -13,7 +12,7 @@ const { User } = require('../../db/models');
 
 //middleware imports
 const { restoreUser, setTokenCookie, requireAuth} = require('../../utils/auth.js');
-
+const { handleError } = require('../../utils/errorHandler');
 
 //Middleware
 router.use(restoreUser);
@@ -26,13 +25,13 @@ router.use('/users', usersRouter);
 router.use('/spots', spotsRouter);
 
 router.use('/reviews', reviewsRouter);
-
 router.use('/review-images', reviewImagesRouter);
-
 
 router.post('/test', (req, res) => {
     res.json({ requestBody: req.body });
   });
 
+// Error handling middleware
+router.use(handleError);
 
-module.exports = router;
+module.exports = router; 

@@ -29,7 +29,7 @@ router.post('/reviews/:reviewId/images', async (req, res, next) => {
 });
 
 //DELETE Delete a Review image by its ID
-router.delete('/:reviewImageId', async (req, res, next) => {
+router.delete('/:imageId', async (req, res, next) => {
     const { reviewImageId } = req.params;
 
     try {

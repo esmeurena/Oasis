@@ -145,12 +145,12 @@ router.post('/:spotId/images', async (req, res, next) => {
 });
 router.post('/:spotId/reviews', async (req, res, next) => {
     try {
-        const spot = req.params.spotId;
-        const currentUser = await req.user.id
-        const {spotId,review, stars} = req.body
-        const numSpot = Number(spot);
-        console.log(numSpot)
-        const newReview =  await Review.create(spotId=numSpot,review, stars)
+        const spotId = req.params.spotId;
+        const userId = await req.user.id;
+        const {review, stars} = req.body;
+        //const numSpot = Number(spot);
+        //console.log(numSpot)
+        const newReview =  await Review.create({spotId, userId, review, stars})
         return res.json(newReview)
     } catch (error) {
         next(error)

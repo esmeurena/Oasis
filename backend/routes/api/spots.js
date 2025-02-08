@@ -193,12 +193,4 @@ router.delete('/:spotId', async (req, res, next) => {
         next(error)
     }
 });
-router.use((err,req,res,next)=>{
-const errorMessage = err.message;
-res.status = 500;
-return res.json({
-    message: errorMessage,
-    status: res.status
-})
-})
 module.exports = router;

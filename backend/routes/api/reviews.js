@@ -117,15 +117,6 @@ router.delete('/:reviewId', requireAuth, async (req, res, next) => {
     }
 });
 
-// Error Handling
-router.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    const errorMessage = err.message || "Internal Server Error";
-    res.status(statusCode).json({
-        message: errorMessage,
-        status: statusCode
-    });
-});
 
 
 module.exports = router;

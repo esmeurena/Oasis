@@ -273,18 +273,14 @@ router.post('/:spotId/bookings', async (req, res, next) => {
 // Spots PUT Method
 router.put('/:spotId', async (req, res, next) => {
     try {
-        const spotId = req.params.id;
+        const spotId = req.params.spotId;
         const { userId, address, city, state, country, lat, lng, name, description, price, previewImage} = req.body;
-        const spotToUpdate = await Spot.findByPk(spotId,{
-            include:[
-                {model:SpotImage},
-                {model:User}
-            ]
-        });
+        const spotToUpdate = await Spot.findByPk(spotId);
         if(!spotToUpdate){
             throw new ErrorHandler("Spot not found", 404)
         }else{
-            await spotToUpdate.update({id,userId, address, city, state, country, lat, lng, name, description, price})
+            await spotToUpdate.update({userId, address, city, state, country, lat, lng, name, description, price})
+            
             return res.json({spot: spotToUpdate})
         }
     } catch (error) {

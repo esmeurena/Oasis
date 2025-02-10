@@ -176,7 +176,8 @@ router.get('/:spotId/reviews', async (req, res, next) => {
             attributes: {exclude:['username','email','hashedPassword','createdAt','updatedAt']}
         },
         {
-            model:ReviewImage
+            model:ReviewImage,
+            attributes: {exclude:['id','reviewId','createdAt','updatedAt']}
         }
         ]
     });
@@ -239,12 +240,12 @@ router.post('/', async (req, res, next) => {
 });
 router.post('/:spotId/images', async (req, res, next) => {
     try {
-        const isSpotId = req.params.spotId;
-        const {spotId, url, preview} = req.body
-        console.log(spotId)
-        const newImage = SpotImage.create(spotId = isSpotId, url, preview)
-        return res.json(newImage)
+        const routeId = req.params.spotId
+        const {url,preview} = req.body
+
+        const newImage = await SpotImage.create({spotId:routeId,url,preview});
         
+        return res.json(newImage)
     } catch (error) {
         next(error)
     }
@@ -274,11 +275,16 @@ router.put('/:spotId', async (req, res, next) => {
     try {
         const spotId = req.params.id;
         const { userId, address, city, state, country, lat, lng, name, description, price, previewImage} = req.body;
-        const spotToUpdate = await Spot.findByPk(spotId,);
+        const spotToUpdate = await Spot.findByPk(spotId,{
+            include:[
+                {model:SpotImage},
+                {model:User}
+            ]
+        });
         if(!spotToUpdate){
             throw new ErrorHandler("Spot not found", 404)
         }else{
-            await spotToUpdate.update({userId, address, city, state, country, lat, lng, name, description, price})
+            await spotToUpdate.update({id,userId, address, city, state, country, lat, lng, name, description, price})
             return res.json({spot: spotToUpdate})
         }
     } catch (error) {

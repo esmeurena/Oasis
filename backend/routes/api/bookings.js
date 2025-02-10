@@ -15,7 +15,7 @@ router.get('/current', async (req, res, next) => {
 });
 
 // GET all bookings for a spot by spotId
-router.get('/spots/:spotId/bookings', async (req, res, next) => {
+router.get('/:spotId/bookings', async (req, res, next) => {
     try {
         const spotId = req.params.spotId;
         const spot = await Spot.findByPk(spotId);

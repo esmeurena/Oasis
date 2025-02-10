@@ -1,16 +1,19 @@
-
 // GET /api/restore-user
 
 //express imports
 const router = require('express').Router();
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
+const spotsRouter = require('./spots.js');
+const reviewsRouter = require('./reviews.js');
+const reviewImagesRouter = require('./review-images.js');
+const bookingsRouter = require('./bookings.js')
 //sequelize imports
 const { User } = require('../../db/models');
 
 //middleware imports
 const { restoreUser, setTokenCookie, requireAuth} = require('../../utils/auth.js');
-
+const { handleError } = require('../../utils/errorHandler');
 
 //Middleware
 router.use(restoreUser);
@@ -20,10 +23,18 @@ router.use('/session', sessionRouter);
 
 router.use('/users', usersRouter);
 
+router.use('/spots', spotsRouter);
+
+router.use('/reviews', reviewsRouter);
+router.use('/review-images', reviewImagesRouter);
+
+router.use('/bookings', bookingsRouter)
 
 router.post('/test', (req, res) => {
     res.json({ requestBody: req.body });
   });
 
+// Error handling middleware
+router.use(handleError);
 
-module.exports = router;
+module.exports = router; 

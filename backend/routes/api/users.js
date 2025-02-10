@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-
+const { ErrorHandler } = require('../../utils/errorHandler');
 
 //Utils imports
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
@@ -34,21 +34,80 @@ const validateSignup = [
 ];
 
 // Sign up
-router.post('/', validateSignup, async (req, res) => {
-    const { email, password, username } = req.body;
-    const hashedPassword = bcrypt.hashSync(password);
-    const user = await User.create({ email, username, hashedPassword });
+router.post('/', validateSignup, async (req, res, next) => {
+    try {
+        const { firstName, lastName, email, password, username } = req.body;
+        const hashedPassword = bcrypt.hashSync(password);
+        const user = await User.create({ firstName, lastName, email, username, hashedPassword });
 
-    const safeUser = {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-    };
+        const safeUser = {
+            id: user.id,
+            email: user.email,
+            username: user.username,
+        };
 
-    await setTokenCookie(res, safeUser);
+        await setTokenCookie(res, safeUser);
 
-    return res.json({
-        user: safeUser
+        return res.json({
+            user: safeUser
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+// GET current user
+router.get('/current', async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findByPk(userId);
+        if (!user) {
+            throw new ErrorHandler("User not found", 404);
+        }
+        return res.json(user);
+    } catch (error) {
+        next(error);
+    }
+});
+
+// PUT update a user by userId
+router.put('/:userId', async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+        const { firstName, lastName, email, username, password } = req.body;
+        const user = await User.findByPk(userId);
+        if (!user) {
+            throw new ErrorHandler("User not found", 404);
+        }
+        await user.update({ firstName, lastName, email, username, password });
+        return res.json(user);
+    } catch (error) {
+        next(error);
+    }
+});
+
+// DELETE a user by userId
+router.delete('/:userId', async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+        const user = await User.findByPk(userId);
+        if (!user) {
+            throw new ErrorHandler("User not found", 404);
+        }
+        await user.destroy();
+        return res.json({ message: "User successfully deleted" });
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Error handling middleware
+router.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const errorMessage = err.message || "Internal Server Error";
+    res.status(statusCode).json({
+        message: errorMessage,
+        status: statusCode
     });
 });
 

@@ -15,6 +15,30 @@ module.exports = {
         reviewId: 1,
         url: 'water.com'
       },
+      {
+        reviewId: 3,
+        url: 'water2.com'
+      },
+      {
+        reviewId: 4,
+        url: 'water3.com'
+      },
+      {
+        reviewId: 3,
+        url: 'water4.com'
+      },
+      {
+        reviewId: 5,
+        url: 'water5.com'
+      },
+      {
+        reviewId: 4,
+        url: 'water6.com'
+      },
+      {
+        reviewId: 1,
+        url: 'water7.com'
+      },
     ], { validate: true });
   },
 

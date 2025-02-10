@@ -27,12 +27,26 @@ router.get('/current', async (req, res, next) => {
     try {
         const userId = await req.user.id;
 
+
         if (!userId) {
             throw new ErrorHandler("User not found", 404);
         }
 
         const reviews = await Review.findAll({
-            where: { userId }
+            where: { userId },
+            include:[{
+                model: User,
+                where: {id : userId},
+                attributes: {exclude:['username','email','hashedPassword','createdAt','updatedAt']}
+            },
+            {
+                model:Spot,
+            },
+            {
+                model:ReviewImage,
+                attributes: {exclude:['id','email','hashedPassword','createdAt','updatedAt']}
+            }
+        ]
         });
 
         if (reviews){

@@ -34,6 +34,15 @@ const validateLogin = [
 router.post('/', validateLogin, async (req, res, next) => {
     try {
         const { credential, password } = req.body;
+        
+        const errors = {};
+        if (!credential) errors.credential = "Email or username is required";
+        if (!password) errors.password = "Password is required";
+        
+        if (Object.keys(errors).length > 0) {
+            throw new ErrorHandler("Bad Request", 400, errors);
+        }
+
         const user = await User.unscoped().findOne({
             where: {
                 [Op.or]: {
@@ -44,7 +53,7 @@ router.post('/', validateLogin, async (req, res, next) => {
         });
 
         if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
-            throw new ErrorHandler('The provided credentials were invalid.', 401);
+            throw new ErrorHandler("Invalid credentials", 401);
         }
 
         const safeUser = {
@@ -84,5 +93,7 @@ router.get('/', (req, res) => {
         });
     } else return res.json({ user: null });
 });
+
+
 
 module.exports = router;

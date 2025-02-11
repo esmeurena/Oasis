@@ -141,27 +141,13 @@ router.get('/current', async (req, res, next) => {
 });
 router.get('/:spotId', async (req, res, next) => {
     try {
-        const spotId = await req.params.spotId;
-        console.log(spotId)
-
-        const spot = await Spot.findAll({
-                include: [{
-                    model: SpotImage,
-                    where:{
-                        spotId: spotId,
-                        preview:true
-                    }
-                }]
-            });
-            console.log(spot)
-
-        if(spot){
-            return res.json(spot)
-        } else {
-            throw new ErrorHandler("Spot not found",404)
+        const spot = await Spot.findByPk(req.params.spotId);
+        if (!spot) {
+            throw new ErrorHandler("Spot couldn't be found", 404);
         }
+        return res.json(spot);
     } catch (error) {
-        next(error)
+        next(error);
     }
 });
 router.get('/:spotId/reviews', async (req, res, next) => {
@@ -213,9 +199,25 @@ router.get('/:spotId/reviews', async (req, res, next) => {
 router.get('/:spotId/bookings', async (req, res, next) => {
     try {
         const spotId = req.params.spotId;
-        const spot = await Spot.findByPk(spotId);
-        if (!spot) {
-            throw new ErrorHandler("Spot not found", 404);
+
+        if (!spotId) {
+            throw new ErrorHandler("Spot Id not found", 404);
+        }
+
+        if (!isNaN(spotId)) {
+            const checkedSpotId = parseInt(spotId, 10);
+            const spot = await Spot.findByPk(checkedSpotId);
+
+            if(!spot){
+                throw new ErrorHandler("Spot not found", 404);
+            }
+
+            const bookings = await Booking.findAll({ 
+                where: { 
+                    spotId: checkedSpotId 
+                } 
+            });
+            return res.json(bookings);
         }
         const bookings = await Booking.findAll({ where: { spotId } });
         return res.json(bookings);
@@ -226,16 +228,30 @@ router.get('/:spotId/bookings', async (req, res, next) => {
 // Spot POST Method 
 router.post('/', async (req, res, next) => {
     try {
-        const {address, city, state, country, lat, lng, name, description, price} = req.body
+        const {address, city, state, country, lat, lng, name, description, price} = req.body;
         
-        if(!address|| !city|| !state|| !country|| !lat|| !lng|| !name|| !price){
-            throw new ErrorHandler("Please check your data entered", 400)
-        }else{
-            const newSpot = await Spot.create({address, city, state, country, lat, lng, name, description, price, userId: req.user.id});
-            return res.json(newSpot)
+        const errors = {};
+        if (!address) errors.address = "Street address is required";
+        if (!city) errors.city = "City is required";
+        if (!state) errors.state = "State is required";
+        if (!country) errors.country = "Country is required";
+        if (!lat || lat < -90 || lat > 90) errors.lat = "Latitude must be within -90 and 90";
+        if (!lng || lng < -180 || lng > 180) errors.lng = "Longitude must be within -180 and 180";
+        if (!name || name.length > 50) errors.name = "Name must be less than 50 characters";
+        if (!description) errors.description = "Description is required";
+        if (!price || price <= 0) errors.price = "Price per day must be a positive number";
+
+        if (Object.keys(errors).length > 0) {
+            throw new ErrorHandler("Bad Request", 400, errors);
         }
+
+        const newSpot = await Spot.create({
+            address, city, state, country, lat, lng, name, 
+            description, price, userId: req.user.id
+        });
+        return res.status(201).json(newSpot);
     } catch (error) {
-        next(error)
+        next(error);
     }
 });
 router.post('/:spotId/images', async (req, res, next) => {
@@ -306,5 +322,4 @@ router.delete('/:spotId', async (req, res, next) => {
         next(error)
     }
 });
-
 module.exports = router;

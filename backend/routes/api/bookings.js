@@ -2,6 +2,7 @@ const express = require('express');
 const { Booking, Spot } = require('../../db/models');
 const { ErrorHandler } = require('../../utils/errorHandler');
 const router = express.Router();
+const { Op } = require('sequelize');
 
 // GET all bookings of the current user
 router.get('/current', async (req, res, next) => {
@@ -35,6 +36,50 @@ router.post('/spots/:spotId/bookings', async (req, res, next) => {
         const { startDate, endDate } = req.body;
         const spotId = req.params.spotId;
         const userId = req.user.id;
+
+        // Validate dates
+        const errors = {};
+        const now = new Date();
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        if (start < now) {
+            errors.startDate = "startDate cannot be in the past";
+        }
+        if (end <= start) {
+            errors.endDate = "endDate cannot be on or before startDate";
+        }
+
+        if (Object.keys(errors).length > 0) {
+            throw new ErrorHandler("Bad Request", 400, errors);
+        }
+
+        // Check for booking conflicts
+        const existingBooking = await Booking.findOne({
+            where: {
+                spotId,
+                [Op.or]: [
+                    {
+                        startDate: {
+                            [Op.between]: [startDate, endDate]
+                        }
+                    },
+                    {
+                        endDate: {
+                            [Op.between]: [startDate, endDate]
+                        }
+                    }
+                ]
+            }
+        });
+
+        if (existingBooking) {
+            throw new ErrorHandler("Sorry, this spot is already booked for the specified dates", 403, {
+                startDate: "Start date conflicts with an existing booking",
+                endDate: "End date conflicts with an existing booking"
+            });
+        }
+
         const spot = await Spot.findByPk(spotId);
         if (!spot) {
             throw new ErrorHandler("Spot not found", 404);
@@ -76,5 +121,7 @@ router.delete('/:bookingId', async (req, res, next) => {
         next(error);
     }
 });
+
+
 
 module.exports = router;

@@ -111,18 +111,30 @@ router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
         const { url } = req.body;
         const reviewId = req.user.id;
 
-        if (!url ) {
-            throw new ErrorHandler("No url detected for Image.", 404);
+        const errors = {};
+        if (!review) errors.review = "Review text is required";
+        if (!stars || stars < 1 || stars > 5) errors.stars = "Stars must be an integer from 1 to 5";
+
+        if (Object.keys(errors).length > 0) {
+            throw new ErrorHandler("Bad Request", 400, errors);
         }
 
-        const review = await Review.findByPk(reviewId);
-        if (!review) {
-            throw new ErrorHandler("Review not found", 404);
+        const spot = await Spot.findByPk(spotId);
+        if (!spot) {
+            throw new ErrorHandler("Spot couldn't be found", 404);
         }
 
-        const newReviewImage = await ReviewImage.create({ reviewId, url });
+        // Check for existing review
+        const existingReview = await Review.findOne({
+            where: { userId, spotId }
+        });
 
-        return res.status(201).json(newReviewImage);
+        if (existingReview) {
+            throw new ErrorHandler("User already has a review for this spot", 500);
+        }
+
+        const newReview = await Review.create({ userId, spotId, review, stars });
+        return res.status(201).json(newReview);
     } catch (error) {
         next(error);
     }
@@ -182,5 +194,6 @@ router.delete('/:reviewId', requireAuth, async (req, res, next) => {
         next(error);
     }
 });
+
 
 module.exports = router;

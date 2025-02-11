@@ -31,11 +31,11 @@ router.post('/test', (req, res) => {
 });
 
 // Authentication error handler
-router.use((req, res, next) => {
+/*router.use((req, res, next) => {
     const err = new Error("Authentication required");
     err.status = 401;
     next(err);
-});
+});*/
 
 // Error handler
 router.use(handleError);

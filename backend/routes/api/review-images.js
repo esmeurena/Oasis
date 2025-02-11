@@ -1,7 +1,7 @@
 const express = require('express');
 const { ReviewImage, Review } = require('../../db/models');
 const { ErrorHandler } = require('../../utils/errorHandler');
-const { requireAuth } = require('../../utils.auth');
+const { requireAuth } = require('../../utils/auth');
 const router = express.Router();
 
 

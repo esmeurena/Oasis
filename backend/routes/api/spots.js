@@ -265,7 +265,12 @@ router.post('/:spotId/reviews', async (req, res, next) => {
 });
 router.post('/:spotId/bookings', async (req, res, next) => {
     try {
-        
+        const {startDate, endDate} = req.body
+        const thisSpotId = req.params.spotId
+        const userId = req.user.id
+
+        const newBooking = await Booking.create({spotId:thisSpotId,userId:userId,startDate,endDate})
+        return res.json(newBooking)
     } catch (error) {
         next(error)
     }

@@ -15,7 +15,6 @@ const { ErrorHandler } = require('../../utils/errorHandler');
 const router = express.Router();
 
 // Spot GET Method 
-// Spot GET Method 
 router.get('/', async (req, res, next) => {
     try {
         //filters for the queries
@@ -61,15 +60,15 @@ router.get('/', async (req, res, next) => {
             where: filterRules,
             include: {
                 model: SpotImage,
-                where:{
-                    preview:true
-                },
+                //where:{
+                //    preview:true
+                //},
                 attributes: ['url']
             },
             limit: limit,
             offset: offset
         });
-if(spots.length > 0) {
+        if(spots.length > 0) {
 
             //return res.json(spots); // dont need
 
@@ -296,9 +295,26 @@ router.put('/:spotId', async (req, res, next) => {
     try {
         const spotId = req.params.spotId;
         const { userId, address, city, state, country, lat, lng, name, description, price, previewImage} = req.body;
+
+        const errors = {};
+        if (!userId) errors.userId = "UserId is required";
+        if (!address) errors.address = "Street address is required";
+        if (!city) errors.city = "City is required";
+        if (!state) errors.state = "State is required";
+        if (!country) errors.country = "Country is required";
+        if (!lat || lat < -90 || lat > 90) errors.lat = "Latitude must be within -90 and 90";
+        if (!lng || lng < -180 || lng > 180) errors.lng = "Longitude must be within -180 and 180";
+        if (!name || name.length > 50) errors.name = "Name must be less than 50 characters";
+        if (!description) errors.description = "Description is required";
+        if (!price || price <= 0) errors.price = "Price per day must be a positive number";
+
+        if (Object.keys(errors).length > 0) {
+            throw new ErrorHandler("Bad Request", 400, errors);
+        }
+
         const spotToUpdate = await Spot.findByPk(spotId);
         if(!spotToUpdate){
-            throw new ErrorHandler("Spot not found", 404)
+            throw new ErrorHandler("Updating a Spot that does not exist", 404)
         }else{
             await spotToUpdate.update({userId, address, city, state, country, lat, lng, name, description, price})
             
@@ -311,13 +327,22 @@ router.put('/:spotId', async (req, res, next) => {
 router.delete('/:spotId', async (req, res, next) => {
     try {
         const spotId = req.params.spotId;
-        const spotToDelete = await Spot.findByPk(spotId);
-        if(spotToDelete){
-            await spotToDelete.destroy();
-            return res.json({ message: "Spot deleted successfully"})
-        } else{
+        const spotToDelete = await Spot.findByPk(spotId, {logging:false});
+        ;
+        if(!spotToDelete){
             throw new ErrorHandler("No spot found with provided ID", 404)
         }
+
+        await Booking.destroy({
+            where:{spotId}
+        });
+        await SpotImage.destroy({
+            where:{spotId}
+        });
+
+        await spotToDelete.destroy();
+        return res.json({ message: "Spot deleted successfully"})
+        
     } catch (error) {
         next(error)
     }

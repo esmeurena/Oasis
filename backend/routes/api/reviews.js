@@ -105,36 +105,51 @@ router.get('/current', async (req, res, next) => {
  *  POST a ReviewImage
  *  /reviews/:reviewId/images
  * 
+ * try {
+        const { url } = req.body;
+        const reviewId = req.user.id;
+        const review = await Review.findByPk(reviewId);
+
+        if (!url){
+            throw new ErrorHandler("url couldn't be found", 404);
+        }
+        if (!review) {
+            throw new ErrorHandler("Review couldn't be found", 404);
+        }
+
+        const newReviewImage = await ReviewImage.create({ url, reviewId: review });
+        return res.status(201).json(newReviewImage);
+    } catch (error) {
+        next(error);
+    }
  */
 router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
     try {
+        const { reviewId } = req.params;
         const { url } = req.body;
-        const reviewId = req.user.id;
+        const userId = req.user.id;
 
-        const errors = {};
-        if (!review) errors.review = "Review text is required";
-        if (!stars || stars < 1 || stars > 5) errors.stars = "Stars must be an integer from 1 to 5";
-
-        if (Object.keys(errors).length > 0) {
-            throw new ErrorHandler("Bad Request", 400, errors);
+        const review = await Review.findByPk(reviewId);
+        if (!review) {
+            throw new ErrorHandler("Review couldn't be found", 404);
         }
 
-        const spot = await Spot.findByPk(spotId);
-        if (!spot) {
-            throw new ErrorHandler("Spot couldn't be found", 404);
+        // Check if review belongs to current user
+        if (review.userId !== userId) {
+            throw new ErrorHandler("Forbidden", 403);
         }
 
-        // Check for existing review
-        const existingReview = await Review.findOne({
-            where: { userId, spotId }
+        // Check number of existing images
+        const imageCount = await ReviewImage.count({ where: { reviewId } });
+        if (imageCount >= 10) {
+            throw new ErrorHandler("Maximum number of images for this review was reached", 403);
+        }
+
+        const newReviewImage = await ReviewImage.create({ reviewId, url });
+        return res.json({
+            id: newReviewImage.id,
+            url: newReviewImage.url
         });
-
-        if (existingReview) {
-            throw new ErrorHandler("User already has a review for this spot", 500);
-        }
-
-        const newReview = await Review.create({ userId, spotId, review, stars });
-        return res.status(201).json(newReview);
     } catch (error) {
         next(error);
     }

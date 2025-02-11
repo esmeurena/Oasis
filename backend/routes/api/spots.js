@@ -297,7 +297,7 @@ router.delete('/:spotId', async (req, res, next) => {
         const spotId = req.params.spotId;
         const spotToDelete = await Spot.findByPk(spotId);
         if(spotToDelete){
-            const deletedSpot = await spotToDelete.destroy();
+            await spotToDelete.destroy();
             return res.json({ message: "Spot deleted successfully"})
         } else{
             throw new ErrorHandler("No spot found with provided ID", 404)
@@ -306,12 +306,5 @@ router.delete('/:spotId', async (req, res, next) => {
         next(error)
     }
 });
-router.use((err,req,res,next)=>{
-const errorMessage = err.message;
-res.status = 500;
-return res.json({
-    message: errorMessage,
-    status: res.status
-})
-})
+
 module.exports = router;

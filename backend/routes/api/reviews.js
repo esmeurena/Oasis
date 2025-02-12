@@ -25,8 +25,11 @@ const router = express.Router();
  */
 router.get('/current', async (req, res, next) => {
     try {
-        const userId = await req.user.id;
 
+        if(!req.user || !req.user.id){
+            throw new ErrorHandler("User not authenticated", 401);
+        }
+        const userId = await req.user.id;
 
         if (!userId) {
             throw new ErrorHandler("User not found", 404);
@@ -49,7 +52,7 @@ router.get('/current', async (req, res, next) => {
         ]
         });
 
-        if (reviews){
+        if (reviews && reviews.length > 0){
             return res.json(reviews);
         } else {
             throw new ErrorHandler("No reviews found", 404);
@@ -129,6 +132,16 @@ router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
         const { url } = req.body;
         const userId = req.user.id;
 
+        if(!userId){
+            throw new ErrorHandler("User not authenticated", 401);
+        }
+        if (isNaN(reviewId)) {
+            throw new ErrorHandler("Invalid review ID format", 400);
+        }        
+        if(url.length > 255){
+            throw new ErrorHandler("URL is too long", 400);
+        }        
+
         const review = await Review.findByPk(reviewId);
         if (!review) {
             throw new ErrorHandler("Review couldn't be found", 404);
@@ -166,6 +179,13 @@ router.put('/:reviewId', requireAuth, async (req, res, next) => {
         const { review, stars } = req.body;
         const userId = req.user.id;
 
+        if(!review || !stars){
+            throw new ErrorHandler("Review and stars are required", 400);
+        }
+        if(typeof stars !== 'number' || stars < 1 || stars > 5){
+            throw new ErrorHandler("Stars must be a number between 1 and 5", 400);
+        }
+
         const reviewToUpdate = await Review.findByPk(reviewId);
         if (!reviewToUpdate) {
             throw new ErrorHandler("Review not found", 404);
@@ -192,6 +212,10 @@ router.delete('/:reviewId', requireAuth, async (req, res, next) => {
     try {
         const reviewId = req.params.reviewId;
         const userId = req.user.id;
+
+        if(isNaN(reviewId)){
+            throw new ErrorHandler("not a valid ReviewId", 400);
+        }        
 
         const reviewToDelete = await Review.findByPk(reviewId);
         if (!reviewToDelete) {

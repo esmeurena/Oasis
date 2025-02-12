@@ -43,6 +43,7 @@ router.post('/', validateSignup, async (req, res, next) => {
         if (!username) errors.username = "Username is required";
         if (!firstName) errors.firstName = "First Name is required";
         if (!lastName) errors.lastName = "Last Name is required";
+        if (!password || password.length < 5) errors.password = "Password must be at least 5 characters";
 
         if (Object.keys(errors).length > 0) {
             throw new ErrorHandler("Bad Request", 400, errors);
@@ -51,14 +52,14 @@ router.post('/', validateSignup, async (req, res, next) => {
         // Check if user exists
         const existingEmail = await User.findOne({ where: { email } });
         if (existingEmail) {
-            throw new ErrorHandler("User already exists", 500, {
+            throw new ErrorHandler("Email already exists", 500, {
                 email: "User with that email already exists"
             });
         }
 
         const existingUsername = await User.findOne({ where: { username } });
         if (existingUsername) {
-            throw new ErrorHandler("User already exists", 500, {
+            throw new ErrorHandler("Username already exists", 500, {
                 username: "User with that username already exists"
             });
         }

@@ -25,8 +25,11 @@ const router = express.Router();
  */
 router.get('/current', async (req, res, next) => {
     try {
-        const userId = await req.user.id;
 
+        if(!req.user || !req.user.id){
+            throw new ErrorHandler("User not authenticated", 401);
+        }
+        const userId = await req.user.id;
 
         if (!userId) {
             throw new ErrorHandler("User not found", 404);
@@ -49,7 +52,7 @@ router.get('/current', async (req, res, next) => {
         ]
         });
 
-        if (reviews){
+        if (reviews && reviews.length > 0){
             return res.json(reviews);
         } else {
             throw new ErrorHandler("No reviews found", 404);
@@ -105,24 +108,61 @@ router.get('/current', async (req, res, next) => {
  *  POST a ReviewImage
  *  /reviews/:reviewId/images
  * 
+ * try {
+        const { url } = req.body;
+        const reviewId = req.user.id;
+        const review = await Review.findByPk(reviewId);
+
+        if (!url){
+            throw new ErrorHandler("url couldn't be found", 404);
+        }
+        if (!review) {
+            throw new ErrorHandler("Review couldn't be found", 404);
+        }
+
+        const newReviewImage = await ReviewImage.create({ url, reviewId: review });
+        return res.status(201).json(newReviewImage);
+    } catch (error) {
+        next(error);
+    }
  */
 router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
     try {
+        const { reviewId } = req.params;
         const { url } = req.body;
-        const reviewId = req.user.id;
+        const userId = req.user.id;
 
-        if (!url ) {
-            throw new ErrorHandler("No url detected for Image.", 404);
+        if(!userId){
+            throw new ErrorHandler("User not authenticated", 401);
         }
+        if (isNaN(reviewId)) {
+            throw new ErrorHandler("Invalid review ID format", 400);
+        }        
+        if(url.length > 255){
+            throw new ErrorHandler("URL is too long", 400);
+        }        
 
         const review = await Review.findByPk(reviewId);
         if (!review) {
-            throw new ErrorHandler("Review not found", 404);
+            throw new ErrorHandler("Review couldn't be found", 404);
+        }
+
+        // Check if review belongs to current user
+        if (review.userId !== userId) {
+            throw new ErrorHandler("Forbidden", 403);
+        }
+
+        // Check number of existing images
+        const imageCount = await ReviewImage.count({ where: { reviewId } });
+        if (imageCount >= 10) {
+            throw new ErrorHandler("Maximum number of images for this review was reached", 403);
         }
 
         const newReviewImage = await ReviewImage.create({ reviewId, url });
-
-        return res.status(201).json(newReviewImage);
+        return res.json({
+            id: newReviewImage.id,
+            url: newReviewImage.url
+        });
     } catch (error) {
         next(error);
     }
@@ -138,6 +178,13 @@ router.put('/:reviewId', requireAuth, async (req, res, next) => {
         const reviewId = req.params.reviewId;
         const { review, stars } = req.body;
         const userId = req.user.id;
+
+        if(!review || !stars){
+            throw new ErrorHandler("Review and stars are required", 400);
+        }
+        if(typeof stars !== 'number' || stars < 1 || stars > 5){
+            throw new ErrorHandler("Stars must be a number between 1 and 5", 400);
+        }
 
         const reviewToUpdate = await Review.findByPk(reviewId);
         if (!reviewToUpdate) {
@@ -166,6 +213,10 @@ router.delete('/:reviewId', requireAuth, async (req, res, next) => {
         const reviewId = req.params.reviewId;
         const userId = req.user.id;
 
+        if(isNaN(reviewId)){
+            throw new ErrorHandler("not a valid ReviewId", 400);
+        }        
+
         const reviewToDelete = await Review.findByPk(reviewId);
         if (!reviewToDelete) {
             throw new ErrorHandler("Review not found", 404);
@@ -181,16 +232,6 @@ router.delete('/:reviewId', requireAuth, async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-});
-
-// Error Handling
-router.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    const errorMessage = err.message || "Internal Server Error";
-    res.status(statusCode).json({
-        message: errorMessage,
-        status: statusCode
-    });
 });
 
 

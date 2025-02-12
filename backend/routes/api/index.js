@@ -1,40 +1,43 @@
-// GET /api/restore-user
-
 //express imports
 const router = require('express').Router();
+const { handleError } = require('../../utils/errorHandler');
+const { restoreUser } = require('../../utils/auth');
+
+// Import all route files
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
 const spotsRouter = require('./spots.js');
 const reviewsRouter = require('./reviews.js');
+const bookingsRouter = require('./bookings.js');
 const reviewImagesRouter = require('./review-images.js');
-const bookingsRouter = require('./bookings.js')
-//sequelize imports
-const { User } = require('../../db/models');
+//const spotImagesRouter = require('./spot-images.js');
 
-//middleware imports
-const { restoreUser, setTokenCookie, requireAuth} = require('../../utils/auth.js');
-const { handleError } = require('../../utils/errorHandler');
-
-//Middleware
+// Apply authentication middleware
 router.use(restoreUser);
 
-//Routes for API
+// Connect all routes
 router.use('/session', sessionRouter);
-
 router.use('/users', usersRouter);
-
 router.use('/spots', spotsRouter);
-
 router.use('/reviews', reviewsRouter);
+router.use('/bookings', bookingsRouter);
 router.use('/review-images', reviewImagesRouter);
+//router.use('/spot-images', spotImagesRouter);
 
-router.use('/bookings', bookingsRouter)
+// For testing purposes
 
 router.post('/test', (req, res) => {
     res.json({ requestBody: req.body });
-  });
+});
 
-// Error handling middleware
+// Authentication error handler
+/*router.use((req, res, next) => {
+    const err = new Error("Authentication required");
+    err.status = 401;
+    next(err);
+});*/
+
+// Error handler
 router.use(handleError);
 
-module.exports = router; 
+module.exports = router;

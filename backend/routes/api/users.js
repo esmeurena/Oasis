@@ -12,7 +12,7 @@ const { User } = require('../../db/models');
 
 const router = express.Router();
 
-//PROTECT INCOMING DATA FOR THE SIGNUP ROUTE
+//PROTECT INCOMING DATA FOR THE SIGNUP ROUTE  
 const validateSignup = [
     check('email')
         .exists({ checkFalsy: true })
@@ -37,6 +37,33 @@ const validateSignup = [
 router.post('/', validateSignup, async (req, res, next) => {
     try {
         const { firstName, lastName, email, password, username } = req.body;
+        
+        const errors = {};
+        if (!email || !email.includes('@')) errors.email = "Invalid email";
+        if (!username) errors.username = "Username is required";
+        if (!firstName) errors.firstName = "First Name is required";
+        if (!lastName) errors.lastName = "Last Name is required";
+        if (!password || password.length < 5) errors.password = "Password must be at least 5 characters";
+
+        if (Object.keys(errors).length > 0) {
+            throw new ErrorHandler("Bad Request", 400, errors);
+        }
+
+        // Check if user exists
+        const existingEmail = await User.findOne({ where: { email } });
+        if (existingEmail) {
+            throw new ErrorHandler("Email already exists", 500, {
+                email: "User with that email already exists"
+            });
+        }
+
+        const existingUsername = await User.findOne({ where: { username } });
+        if (existingUsername) {
+            throw new ErrorHandler("Username already exists", 500, {
+                username: "User with that username already exists"
+            });
+        }
+
         const hashedPassword = bcrypt.hashSync(password);
         const user = await User.create({ firstName, lastName, email, username, hashedPassword });
 
@@ -101,14 +128,5 @@ router.delete('/:userId', async (req, res, next) => {
     }
 });
 
-// Error handling middleware
-router.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    const errorMessage = err.message || "Internal Server Error";
-    res.status(statusCode).json({
-        message: errorMessage,
-        status: statusCode
-    });
-});
 
 module.exports = router;

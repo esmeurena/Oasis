@@ -130,3 +130,43 @@ router.delete('/:userId', async (req, res, next) => {
 
 
 module.exports = router;
+
+
+
+// const validateSpot = [
+//     check('address')
+//         .exists({ checkFalsy: true })
+//         .isLength({min: 3})
+//         .withMessage('Street address is required'),
+//     check('city')
+//         .exists({ checkFalsy: true })
+//         .not()
+//         .withMessage('City is required'),
+//     check('state')
+//         .exists({ checkFalsy: true })
+//         .not()
+//         .withMessage('State is Required'),
+//      check('country')
+//         .exists({ checkFalsy: true })
+//         .not()
+//         .withMessage('Country is required'),
+//     check('lat')
+//         .exists({ checkFalsy: true })
+//         .not()
+//         .isMin( -90 )
+//         .isMax( 90 )
+//         .withMessage('Latitude must be winin -90 and 90'),
+//     check('lng')
+//         .exists({ checkFalsy: true })
+//         .min( -90 )
+//         .max( 90 )
+//         .withMessage('Longitude must be winin -180 and 180'),
+//      check('name')
+//          .exists({ checkFalsy: true })
+//          .not()
+//          .withMessage('Description is required')
+//      check('price')
+//          .min( 0 )
+//          .withMessage('Price per day must be positive number')
+//     handleValidationErrors
+// ];

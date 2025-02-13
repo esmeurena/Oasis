@@ -51,6 +51,12 @@ module.exports = (sequelize, DataTypes) => {
         min: 1,
         max: 5
       }
+    },
+    createdAt:{
+      type: DataTypes.DATE
+    },
+    updatedAt:{
+      type: DataTypes.DATE
     }
   }, {
     sequelize,

@@ -9,7 +9,7 @@
     "start:development": "nodemon ./bin/www",
     "start:production": "node ./bin/www",
     "build": "node psql-setup-script.js",
-    "db:reset": "rm -rf ./db/dev.db && npx dotenv sequelize db:migrate && npx dotenv sequelize db:seed:all && npx dotenv sequelize db:migrate:status"
+    "db:reset": "rm -rf ./db/dev.db && npx dotenv sequelize db:migrate && npx dotenv sequelize db:seed:all"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

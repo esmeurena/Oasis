@@ -24,7 +24,13 @@ module.exports = (sequelize, DataTypes) => {
       url: {
         type: DataTypes.STRING,
         allowNull: false
-      }
+      },
+      createdAt:{
+      type: DataTypes.DATE
+    },
+    updatedAt:{
+      type: DataTypes.DATE
+    }
     }, {
     sequelize,
     modelName: 'ReviewImage',

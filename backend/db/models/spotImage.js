@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       SpotImage.belongsTo(models.Spot, {
         foreignKey: "spotId",
-        onDelete: 'cascade',
+        onDelete: 'CASCADE',
         hooks: true
       })
     };
@@ -29,6 +29,12 @@ module.exports = (sequelize, DataTypes) => {
     preview: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    createdAt:{
+      type: DataTypes.DATE
+    },
+    updatedAt:{
+      type: DataTypes.DATE
     }
   }, {
     sequelize,

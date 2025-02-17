@@ -17,10 +17,7 @@ module.exports = {
       spotId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'Spots',
-          key: 'id'
-        },
+        references: {model: 'Spots', key: 'id'},
         onDelete: 'CASCADE'
       },
       url: {
@@ -28,6 +25,7 @@ module.exports = {
       },
       preview: {
         type: Sequelize.BOOLEAN,
+        allowNull:false
       },
       createdAt: {
         allowNull: false,

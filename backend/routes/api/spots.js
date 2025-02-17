@@ -121,7 +121,7 @@ const validateSpots = [
 // Done
 router.get('/', async (req, res, next) => {
     try {
-        let {page,size} = await req.query
+        let {page,size,maxLat,minLat,minLng,maxLng,minPrice,maxPrice} = await req.query
         if(!page) page = 1;
         if(!size) size = 25;
     
@@ -129,9 +129,31 @@ router.get('/', async (req, res, next) => {
             limit:size,
             offset:size * (page -1)
         }
+        if(maxLat === undefined) maxLat = 90;
+        if(minLat === undefined) minLat = -90;
+        if(minLng === undefined) minLng = -180;
+        if(maxLng === undefined) maxLng = 180;
+        if(minPrice === undefined) minPrice = 0;
+        if (maxPrice === undefined) maxPrice = 100000000;
 
 
         const spots = await Spot.findAll({ 
+            where:{
+                lat: {
+                    [Op.gte]:minLat,
+                    [Op.lte]:maxLat
+                },
+                lng: {
+                    [Op.gte]:minLng,
+                    [Op.lte]:maxLng
+                },
+                price: {
+                    [Op.gte]:minPrice,
+                    [Op.lte]:maxPrice
+                }
+                
+            },
+
             include: [{
                 model:SpotImage,
         }],

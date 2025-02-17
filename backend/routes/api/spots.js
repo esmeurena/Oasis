@@ -121,11 +121,21 @@ const validateSpots = [
 // Done
 router.get('/', async (req, res, next) => {
     try {
+        let {page,size} = await req.query
+        if(!page) page = 1;
+        if(!size) size = 25;
+    
+        const paginationObj = {
+            limit:size,
+            offset:page
+        }
+
 
         const spots = await Spot.findAll({ 
             include: [{
                 model:SpotImage,
-        }]
+        }],
+        ...paginationObj
 })
         const resArr = [];
         for (let spot of spots) {
@@ -149,6 +159,9 @@ router.get('/', async (req, res, next) => {
 
             resArr.push(spotBody);
 
+        }
+        if(req.query.page && req.query.size){
+            return res.json({Spots:resArr,page:page,size:size});
         }
         return res.json({Spots:resArr});
     } catch (error) {

@@ -127,7 +127,7 @@ router.get('/', async (req, res, next) => {
     
         const paginationObj = {
             limit:size,
-            offset:page
+            offset:size * (page -1)
         }
 
 

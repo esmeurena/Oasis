@@ -4,6 +4,10 @@ const bcrypt = require('bcryptjs');
 // Security Imports
 const { restoreUser, requireAuth } = require('../../utils/auth');
 
+//Utilities
+const { check } = require('express-validator');
+const { handleValidationErrors } = require('../../utils/validation');
+
 // Sequelize Imports 
 const { Review, ReviewImage, Spot, User } = require('../../db/models');
 const { ErrorHandler } = require('../../utils/errorHandler');

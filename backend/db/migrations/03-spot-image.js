@@ -17,17 +17,15 @@ module.exports = {
       spotId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'Spots',
-          key: 'id'
-        },
-        onDelete: 'Cascade'
+        references: {model: 'Spots', key: 'id'},
+        onDelete: 'CASCADE'
       },
       url: {
         type: Sequelize.STRING(100),
       },
       preview: {
         type: Sequelize.BOOLEAN,
+        allowNull:false
       },
       createdAt: {
         allowNull: false,

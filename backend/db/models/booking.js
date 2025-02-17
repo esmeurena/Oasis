@@ -31,12 +31,24 @@ module.exports = (sequelize, DataTypes) => {
     },
     startDate: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate:{
+        isDate:true,
+      }
     },
     endDate: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate:{
+        isDate:true,
+      }
     },
+    createdAt:{
+      type: DataTypes.DATE
+    },
+    updatedAt:{
+      type: DataTypes.DATE
+    }
   }, {
     sequelize,
     modelName: 'Booking'

@@ -12,7 +12,7 @@ router.delete('/:reviewImageId', async (req, res, next) => {
         const reviewImageToDelete = await ReviewImage.findByPk(reviewImageId);
 
         if(!reviewImageToDelete){
-            throw new ErrorHandler('Review Image not found', 404);
+            throw new ErrorHandler("Review Image couldn't be found", 404);
         }
 
         await reviewImageToDelete.destroy();

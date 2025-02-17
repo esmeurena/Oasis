@@ -92,32 +92,38 @@ const validateSpots = [
 // Done
 router.get('/', async (req, res, next) => {
     try {
-        const spots = await Spot.findAll({where:{id:1}, include: [{
-            model:SpotImage,
-        }
-    ]
+        const spots = await Spot.findAll({
+            where:{ id: 1 }, 
+            include: [{
+                model:SpotImage,
+        }]
 })
-        const resArr = []
+        const resArr = [];
         for (let spot of spots) {
             const spotBody = spot.toJSON();
             const reviews = await Review.findAll({ where: {spotId:spotBody.id}});
-            const exsistsError = new ErrorHandler("Spot couldn't be found",404)
-            let aveReview = 0
+            const exsistsError = new ErrorHandler("Spot couldn't be found",404);
+            let aveReview = 0;
             for(let review of reviews){
-                aveReview += review.stars
+                aveReview += review.stars;
             }
-            spotBody.aveReview = aveReview
-            spotBody.previewImage = spotBody.SpotImages[0].url
-            delete spotBody.SpotImages
+            spotBody.aveReview = aveReview;
 
+            if(spotBody.SpotImages && spotBody.SpotImages.length > 0){
+                spotBody.previewImage = spotBody.SpotImages[0].url;
+            }
+            //else{
+            //     spotBody.previewImage = ??;
+            // }
+            
+            delete spotBody.SpotImages;
 
-        
-            resArr.push(spotBody)
+            resArr.push(spotBody);
 
         }
-        return res.json(resArr);
+        return res.json({Spots:resArr});
     } catch (error) {
-            next(error)
+            next(error);
         }
     });
 
@@ -125,18 +131,18 @@ router.get('/', async (req, res, next) => {
 router.get('/current', async (req, res, next) => {
     try {
         if(!req.user){
-            throw new noResourceError("User Not Signed In",404)
+            throw new noResourceError("User Not Signed In",404);
         }
         
-        const currentUser = await req.user.id
-        const checkForSpots = await Spot.findByPk(currentUser)
+        const currentUser = await req.user.id;
+        const checkForSpots = await Spot.findByPk(currentUser);
         if(!checkForSpots){
-            throw new noResourceError("This User Has No Spots", 404)
+            throw new noResourceError("This User Has No Spots", 404);
         }
         const userSpots = await Spot.findAll({
             where: {userId:currentUser},
             include:[{
-                model:SpotImage
+                model:SpotImage,
             },
         ]
         })
@@ -144,40 +150,43 @@ router.get('/current', async (req, res, next) => {
         let resArr = []
         for(let spot of userSpots){
             const spotBody = spot.toJSON();
-            const reviews = await Review.findAll({where:{userId:spotBody.id}})
-            let aveRating = 0
+            const reviews = await Review.findAll({
+                where:{
+                    userId:spotBody.id
+                }});
+            let aveRating = 0;
             for(let review of reviews){
-                aveRating += review.stars
+                aveRating += review.stars;
             }
             if(reviews.length < 1){
-                spotBody.aveRating = 0
+                spotBody.aveRating = 0;
             }else{
-                spotBody.aveRating = aveRating/reviews.length
+                spotBody.aveRating = aveRating/reviews.length;
             }
             if(spotBody.SpotImages[0]){
-                spotBody.previewImage = spotBody.SpotImages[0]
+                spotBody.previewImage = spotBody.SpotImages[0];
             }else{
-                spotBody.previewImage = "no previewImage"
+                spotBody.previewImage = "no previewImage";
             }
-            delete spotBody.SpotImages
-            resArr.push(spotBody)
+            delete spotBody.SpotImages;
+            resArr.push(spotBody);
         }
         
 
         return res.json({Spots:resArr});
 
     } catch (error) {
-        next(error)
+        next(error);
     }
 });
 
 // Done
 router.get('/:spotId', async (req, res, next) => {
     try {
-        const spotId = req.params.spotId
-        const thisSpot = await Spot.findByPk(spotId)
+        const spotId = req.params.spotId;
+        const thisSpot = await Spot.findByPk(spotId);
         if(!thisSpot){
-            const err = new noResourceError("Spot couldn't be found", 404)
+            const err = new noResourceError("Spot couldn't be found", 404);
             err.throwThis();
         }
         
@@ -196,34 +205,34 @@ router.get('/:spotId', async (req, res, next) => {
         for (let spot of spots) {
             const spotBody = spot.toJSON();
             const reviews = await Review.findAll({ where: {spotId:spotBody.id}});
-            let aveReview = 0
-            let numReviews = 0
+            let aveReview = 0;
+            let numReviews = 0;
             for(let review of reviews){
-                aveReview += review.stars
-                numReviews ++
+                aveReview += review.stars;
+                numReviews ++;
             }
             //did this manually cuz I couldn't get aveReviews and numReviews to go before spotReview
-            let prettyBody = {}
-            prettyBody.id = spotBody.id
-            prettyBody.userId = spotBody.userId
-            prettyBody.address = spotBody.address
-            prettyBody.city = spotBody.city
-            prettyBody.state = spotBody.state
-            prettyBody.country = spotBody.country
-            prettyBody.lat = spotBody.id
-            prettyBody.lng = spotBody.lng
-            prettyBody.name = spotBody.name
-            prettyBody.description = spotBody.description
-            prettyBody.price = spotBody.price
-            prettyBody.createdAt = spotBody.createdAt
-            prettyBody.updatedAt = spotBody.updatedAt
-            prettyBody.numReviews = numReviews
-            prettyBody.aveReview = aveReview
-            prettyBody.SpotImages = spotBody.SpotImages
-            prettyBody.Owner = spotBody.Owner
+            let prettyBody = {};
+            prettyBody.id = spotBody.id;
+            prettyBody.userId = spotBody.userId;
+            prettyBody.address = spotBody.address;
+            prettyBody.city = spotBody.city;
+            prettyBody.state = spotBody.state;
+            prettyBody.country = spotBody.country;
+            prettyBody.lat = spotBody.id;
+            prettyBody.lng = spotBody.lng;
+            prettyBody.name = spotBody.name;
+            prettyBody.description = spotBody.description;
+            prettyBody.price = spotBody.price;
+            prettyBody.createdAt = spotBody.createdAt;
+            prettyBody.updatedAt = spotBody.updatedAt;
+            prettyBody.numReviews = numReviews;
+            prettyBody.aveReview = aveReview;
+            prettyBody.SpotImages = spotBody.SpotImages;
+            prettyBody.Owner = spotBody.Owner;
 
-            spotBody.SpotImages = spotBody.SpotImages
-            resArr.push(prettyBody)
+            spotBody.SpotImages = spotBody.SpotImages;
+            resArr.push(prettyBody);
 
         }
         return res.json(resArr);
@@ -259,7 +268,7 @@ router.get('/:spotId/reviews', async (req, res, next) => {
         for (let review of reviews) {
             const updatedReview = review.toJSON();
            if(!updatedReview.ReviewImage){
-            delete updatedReview.ReviewImage
+            delete updatedReview.ReviewImage;
            }
             updatedReviews.push(updatedReview);
         }
@@ -270,27 +279,50 @@ router.get('/:spotId/reviews', async (req, res, next) => {
     }
 })
 
-//NEEDS REDO
+// DONE
 router.get('/:spotId/bookings', async (req, res, next) => {
     try {
         const spotId = req.params.spotId;
-        if (!isNaN(spotId)) {
-            const checkedSpotId = parseInt(spotId, 10);
-            const spot = await Spot.findByPk(checkedSpotId);
+        //const userId = req.user.id;
 
-            if (!spot) {
-                throw new ErrorHandler("Spot not found", 404);
-            }
+        if(!spotId){
+            throw new ErrorHandler("Spot couldn't be found", 404);
+        }
 
+        if(req.user){
             const bookings = await Booking.findAll({
                 where: {
-                    spotId: checkedSpotId
+                    spotId: spotId
+                },
+                include: [
+                    { model: User,
+                        attributes:{exclude:['username','hashedPassword','email','createdAt','updatedAt']}
+                    }
+                ]
+            });
+            if(!bookings){
+                throw new ErrorHandler("No Bookings for this SpotId found", 404);
+            }
+            return res.json({ Bookings: bookings });
+        }else{
+            const bookings = await Booking.findAll({
+                where: {
+                    spotId: spotId
                 }
             });
-            return res.json(bookings);
+            let updatedBookings = [];
+            for (let booking of bookings) {
+                const updatedBooking = booking.toJSON();
+                delete updatedBooking.id;
+                delete updatedBooking.userId;
+                delete updatedBooking.createdAt;
+                delete updatedBooking.updatedAt;
+                updatedBookings.push(updatedBooking);
+            }
+            return res.json({ Bookings: updatedBookings });
         }
-        const bookings = await Booking.findAll({ where: { spotId } });
-        return res.json(bookings);
+
+        //return res.json(bookings);
     } catch (error) {
         next(error);
     }

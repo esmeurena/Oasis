@@ -15,7 +15,7 @@ const { ErrorHandler } = require('../../utils/errorHandler');
 const router = express.Router();
 
 // Format dates 
-const formatDate = (date) => date.toISOString().replace('T', ' ').substring(0, 19);
+// const formatDate = (date) => date.toISOString().replace('T', ' ').substring(0, 19);
 
 // Getting all reviews of the current user
 router.get('/current', requireAuth, async (req, res, next) => {
@@ -26,14 +26,14 @@ router.get('/current', requireAuth, async (req, res, next) => {
             where: { userId },
             include: [
                 { model: User, attributes: ['id', 'firstName', 'lastName'] },
-                { model: Spot, attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price', 'previewImage'] },
+                { model: Spot, attributes: ['id', 'userId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price',"createdAt","updatedAt"] },
                 { model: ReviewImage, attributes: ['id', 'url'] }
             ]
         });
-        reviews.forEach(review => {
-            review.dataValues.createdAt = formatDate(review.createdAt);
-            review.dataValues.updatedAt = formatDate(review.updatedAt);
-        });
+        // reviews.forEach(review => {
+        //     review.dataValues.createdAt = formatDate(review.createdAt);
+        //     review.dataValues.updatedAt = formatDate(review.updatedAt);
+        // });
 
         return res.json({ Reviews: reviews });
     } catch (error) {

@@ -92,8 +92,7 @@ const validateSpots = [
 // Done
 router.get('/', async (req, res, next) => {
     try {
-        const spots = await Spot.findAll({
-            where:{ id: 1 }, 
+        const spots = await Spot.findAll({ 
             include: [{
                 model:SpotImage,
         }]

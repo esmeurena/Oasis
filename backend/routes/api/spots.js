@@ -361,7 +361,7 @@ router.get('/:spotId/bookings', async (req, res, next) => {
 router.post('/', validateSpots, async (req, res, next) => {
     try {
         if(!req.user.id){
-            throw new Error("User needs to be signed in")
+            throw new ErrorHandler("User needs to be signed in", 400);
         }
         const userId = await req.user.id;
         const { address, city, state, country, lat, lng, name, description, price } = req.body;
@@ -379,26 +379,29 @@ router.post('/', validateSpots, async (req, res, next) => {
         next(error);
     }
 });
-//NEEDS REDO
+// done
 router.post('/:spotId/images', async (req, res, next) => {
     try {
-        const routeId = req.params.spotId
-        const { url, preview } = req.body
+        const routeId = req.params.spotId;
+        const { url, preview } = req.body;
+
+        if(!routeId){
+            throw new ErrorHandler("Spot couldn't be found", 404);
+        }
 
         const newImage = await SpotImage.create({ spotId: routeId, url, preview });
 
-        return res.json(newImage)
+        return res.json(newImage);
     } catch (error) {
-        next(error)
+        next(error);
     }
 });
-// NEEDS REDO
+// done
 router.post('/:spotId/reviews',validateReview, async (req, res, next) => {
     try {
         const {spotId} = req.params
         const userId = req.user.id
         const { review, stars } = req.body;
-
 
         const spot = await Spot.findByPk(spotId)
 
@@ -412,19 +415,19 @@ router.post('/:spotId/reviews',validateReview, async (req, res, next) => {
                 userId: userId
             }
         })
-console.log(userReview)
+    // console.log(userReview)
         if(!userReview){
             const newReview = await Review.create({ userId, spotId, userId, review, stars });
             res.status(201)
             return res.json(newReview);
 
         }else{
-            throw new ErrorHandler("User already has a review for this spot.")
+            throw new ErrorHandler("User already has a review for this spot.");
         }
         //const numSpot = Number(spot);
         //console.log(numSpot)
     } catch (error) {
-        next(error)
+        next(error);
     }
 });
 // NEEDS REDO
@@ -440,31 +443,22 @@ router.post('/:spotId/bookings', async (req, res, next) => {
         next(error)
     }
 });
-// 
-router.put('/:spotId', async (req, res, next) => {
+
+// DONE
+router.put('/:spotId', validateSpots, async (req, res, next) => {
     try {
         const spotId = req.params.spotId;
-        const { userId, address, city, state, country, lat, lng, name, description, price, previewImage } = req.body;
+        const userId = req.user.id;
 
-        const errors = {};
-        if (!userId) errors.userId = "UserId is required";
-        if (!address) errors.address = "Street address is required";
-        if (!city) errors.city = "City is required";
-        if (!state) errors.state = "State is required";
-        if (!country) errors.country = "Country is required";
-        if (!lat || lat < -90 || lat > 90) errors.lat = "Latitude must be within -90 and 90";
-        if (!lng || lng < -180 || lng > 180) errors.lng = "Longitude must be within -180 and 180";
-        if (!name || name.length > 50) errors.name = "Name must be less than 50 characters";
-        if (!description) errors.description = "Description is required";
-        if (!price || price <= 0) errors.price = "Price per day must be a positive number";
-
-        if (Object.keys(errors).length > 0) {
-            throw new ErrorHandler("Bad Request", 400, errors);
+        if(!req.user){
+            throw new ErrorHandler("Spot must belong to the current user", 404);
         }
+
+        const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
         const spotToUpdate = await Spot.findByPk(spotId);
         if (!spotToUpdate) {
-            throw new ErrorHandler("Updating a Spot that does not exist", 404)
+            throw new ErrorHandler("Spot couldn't be found", 404);
         } else {
             await spotToUpdate.update({ userId, address, city, state, country, lat, lng, name, description, price })
 
@@ -474,22 +468,22 @@ router.put('/:spotId', async (req, res, next) => {
         next(error)
     }
 });
-//NEEDS REDO
+
+//DONE
 router.delete('/:spotId', async (req, res, next) => {
     try {
         const spotId = req.params.spotId;
-        const spotToDelete = await Spot.findByPk(spotId, { logging: false });
+        const userId = req.user.id;
+
+        const spotToDelete = await Spot.findByPk(spotId);
 
         if (!spotToDelete) {
-            throw new ErrorHandler("No spot found with provided ID", 404)
+             throw new ErrorHandler("No spot found with provided ID", 404)
         }
 
-        await Booking.destroy({
-            where: { spotId }
-        });
-        await SpotImage.destroy({
-            where: { spotId }
-        });
+        if(spotToDelete.userId !== userId){
+            throw new ErrorHandler("You are not authorized to delete this booking", 403);
+        }
 
         await spotToDelete.destroy();
         return res.json({ message: "Spot deleted successfully" })

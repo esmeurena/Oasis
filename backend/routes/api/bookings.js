@@ -29,12 +29,11 @@ router.get('/current', async (req, res, next) => {
             include:[{
                 model: Spot
             }]
-        })
-        console.log(currUser)
+        });
         if(!req.user){
             throw new ErrorHandler("No User Logged in.");
         }
-        if(!userSpot){
+        if(!userSpot[0]){
             throw new ErrorHandler("No bookings for this User")
         }
 
@@ -125,7 +124,7 @@ router.delete('/:bookingId', async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-});
+});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 
 
 

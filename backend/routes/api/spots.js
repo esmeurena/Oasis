@@ -14,6 +14,35 @@ const { ErrorHandler, noResourceError } = require('../../utils/errorHandler');
 const router = express.Router();
 
 //PROTECT INCOMING DATA FOR THE Create Spots ROUTE
+// const checkQueryParams = [
+//     check("page")
+//         .isInt({min:1})
+//         .withMessage('Page must ne greater than or equal to 1'),
+//     check("size")
+//         .isInt({min:1})
+//         .withMessage("Size must by greater then 1"),
+//     check("maxLat")
+//         .isDecimal({max:90})
+//         .withMessage("Maximum latitude is invalid"),
+//     check("minLat")
+//         .isDecimal({min:-90})
+//         .withMessage("Minimum latitude is invalid"),
+//     check("maxLng")
+//         .isDecimal({max:180})
+//         .withMessage("Maximum longitude is invalid"),
+//     check("minLng")
+//         .isDecimal({min:-180})
+//         .withMessage("Minimum latitude is invalid"),
+//     check("minPrice")
+//         .isDecimal({min:0})
+//         .withMessage("Minimum price must be greater than or equal to 0"),
+//     check("maxPrice")
+//         .isDecimal({min:0})
+//         .withMessage("Maximum price must be greater than or equal to 0"),
+//     handleValidationErrors
+
+
+// ];
 const validateReview = [
     check("review")
         .exists({checkFalsy: true})
@@ -92,6 +121,7 @@ const validateSpots = [
 // Done
 router.get('/', async (req, res, next) => {
     try {
+
         const spots = await Spot.findAll({ 
             include: [{
                 model:SpotImage,
@@ -410,7 +440,7 @@ router.post('/:spotId/bookings', async (req, res, next) => {
         next(error)
     }
 });
-// NEEDS REDO
+// 
 router.put('/:spotId', async (req, res, next) => {
     try {
         const spotId = req.params.spotId;

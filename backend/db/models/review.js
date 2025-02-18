@@ -13,17 +13,17 @@ module.exports = (sequelize, DataTypes) => {
 
       Review.hasOne(models.ReviewImage, {
         foreignKey: "reviewId",
-        onDelete:"CASCADE"
+        onDelete:"cascade"
       });
       // Each Review belongs to a Spot
       Review.belongsTo(models.Spot, {
         foreignKey: "spotId",
-        onDelete: "CASCADE" });
+        onDelete: "cascade" });
 
       // Each Review belongs to a User
       Review.belongsTo(models.User, {
         foreignKey: "userId",
-        onDelete: "CASCADE" });
+        onDelete: "cascade" });
     }
   }
   Review.init({

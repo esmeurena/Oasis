@@ -7,7 +7,7 @@ let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
-console.log(3);
+console.log("4");
 module.exports = {
   async up (queryInterface, Sequelize) {
     await Spot.bulkCreate([

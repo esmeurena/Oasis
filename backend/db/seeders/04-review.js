@@ -1,7 +1,5 @@
 'use strict';
 
-console.log("Seeding Reviews...");
-
 const { Review } = require('../models');
 const { Op } = require("sequelize");
 

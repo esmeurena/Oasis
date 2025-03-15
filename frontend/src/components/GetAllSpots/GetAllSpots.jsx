@@ -26,6 +26,7 @@ return (
             <img src={spot.previewImage} className="spot-image"/>
           )}
           <h2>{spot.city}, {spot.state}</h2>
+          <h3>{spot.price}</h3>
         </li>
       ))}
     </ul>

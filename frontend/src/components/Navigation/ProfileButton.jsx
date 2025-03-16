@@ -39,7 +39,7 @@ function ProfileButton({ user }) {
     closeMenu();
   };
 
-  const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
+  const ulClassName = "profile-dropdown" + (showMenu ? " show" : " hidden");
 
   return (
     <>

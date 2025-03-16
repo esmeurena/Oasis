@@ -13,22 +13,22 @@ module.exports = {
     await SpotImage.bulkCreate([
       {
         spotId: 1,
-        url: "images.com",
+        url: "https://images.pexels.com/photos/21040976/pexels-photo-21040976/free-photo-of-wooden-hut-on-field.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
         preview: true
       },
       {
         spotId: 2,
-        url: "dog.com",
+        url: "https://images.pexels.com/photos/463734/pexels-photo-463734.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
         preview: true
       },
       {
         spotId: 3,
-        url: "youtube.com",
+        url: "https://images.pexels.com/photos/2180425/pexels-photo-2180425.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
         preview: true
       },
       {
-        spotId: 2,
-        url: "google.com",
+        spotId: 4,
+        url: "https://images.pexels.com/photos/179845/pexels-photo-179845.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
         preview: true
       }
     ], { validate: true });

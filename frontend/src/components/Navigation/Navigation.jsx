@@ -9,12 +9,13 @@ function Navigation({ isLoaded }) {
   return (
     <ul>
       <li>
-        <NavLink to="/">Home</NavLink>
+        <NavLink to="/" className="nav-link">Home</NavLink>
+        <NavLink to="/spots" className="nav-link">Get All Spots</NavLink>
       </li>
       {isLoaded && (
-        <li>
-          <ProfileButton user={sessionUser} />
-        </li>
+        <div className="profile-button">
+        <ProfileButton user={sessionUser} />
+      </div>
       )}
     </ul>
   );

@@ -156,8 +156,6 @@ router.get('/', async (req, res, next) => {
 
             include: [{
                 model:SpotImage,
-                where: { preview : true },
-                attributes: ['url']
         }],
         ...paginationObj
 })

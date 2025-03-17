@@ -5,39 +5,55 @@ import { csrfFetch } from './csrf';
 /**** ACTION TYPES ****/
 
 const GET_ALL_SPOTS = "spots/getSpots";
+const GET_A_SPOT = "spots/getSpot";
 
 /**** ACTION CREATORS ****/
 
 const getSpots = (spots) => {
-  //console.log("checking spots: ", spots);
-    return {
-      type: GET_ALL_SPOTS,
-      payload: spots
-    };
+  return {
+    type: GET_ALL_SPOTS,
+    payload: spots
   };
+};
+
+const getSpot = (spot) => {
+  return {
+    type: GET_A_SPOT,
+    payload: spot
+  };
+};
 
 /**** THUNKS ****/
 
   export const fetchAllSpots = () => async (dispatch) => {
     const response = await csrfFetch("/api/spots");
     const data = await response.json();
-    //console.log("checking inside fetch: ", data.Spots);
     dispatch(getSpots(data.Spots));
+    return response;
+  };
+
+  export const fetchOneSpot = (spotId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotId}`);
+    //console.log(response);
+    const data = await response.json();
+    //console.log("fetchOneSpot-- ", data)
+    dispatch(getSpot(data));
     return response;
   };
 
 /**** REDUCER ****/
 
-const initialState = { Spots: [] };
+const initialState = { Spots: [], Spot: null };
 
 const spotReducer = (state = initialState, action) => {
-  //console.log("checking inside spotReducer: ", action.payload);
-    switch (action.type) {
-      case GET_ALL_SPOTS:
-        return { ...state, Spots: action.payload };
-      default:
-        return state;
-    }
-  };
+  switch (action.type) {
+    case GET_ALL_SPOTS:
+      return { ...state, Spots: action.payload };
+    case GET_A_SPOT:
+      return { ...state, Spot: action.payload };
+    default:
+      return state;
+  }
+};
 
-  export default spotReducer;
+export default spotReducer;

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllSpots } from '../../store/spots';
+import { Link } from 'react-router-dom';
 import './GetAllSpots.css';
 
 function GetAllSpots() {
@@ -12,8 +13,8 @@ function GetAllSpots() {
     dispatch(fetchAllSpots());
   }, [dispatch]);
 
-  if (!spots ||spots.length === 0) {
-    return <div>No spots found</div>;
+  if(!spots) {
+    return <h2>No spots found!!</h2>;
   }
 
 return (
@@ -21,13 +22,20 @@ return (
     <h1>Get All Spots</h1>
     <ul>
       {spots.map((spot) => (
-        <li key={spot.id}>
+        <Link key={spot.id} to={`/spots/${spot.id}`}>
+        <li>
           {spot.previewImage && (
             <img src={spot.previewImage} className="spot-image"/>
           )}
           <h2>{spot.city}, {spot.state}</h2>
-          <h3>{spot.price}</h3>
+          <h3>{spot.price} / night </h3>
+
+          <div className="tooltip">
+            {spot.city}, {spot.state}
+          </div>
+
         </li>
+        </Link>
       ))}
     </ul>
   </div>

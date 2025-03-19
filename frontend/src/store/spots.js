@@ -6,8 +6,16 @@ import { csrfFetch } from './csrf';
 
 const GET_ALL_SPOTS = "spots/getSpots";
 const GET_A_SPOT = "spots/getSpot";
+const POST_A_SPOT = "spots/createSpot"
 
 /**** ACTION CREATORS ****/
+
+const createSpotAction = (spot) => {
+  return {
+    type: POST_A_SPOT,
+    payload: spot
+  };
+};
 
 const getSpots = (spots) => {
   return {
@@ -25,10 +33,27 @@ const getSpot = (spot) => {
 
 /**** THUNKS ****/
 
+export const createSpot = (userSpotInput) => async (dispatch) => {
+  const { country, address, city, state, description, name, price } = userSpotInput;
+  let lat= 3, lng= 3; // hard code for now
+  const response = await csrfFetch("/api/spots", {
+    method: "POST",
+    body: JSON.stringify({ address, city, state, country, lat, lng, name, description, price })
+  });
+  //console.log("response ---", response);
+
+  const data = await response.json();
+  dispatch(createSpotAction(data));
+  //dispatch(getSpots([data]));
+  return data;
+};
+
+
   export const fetchAllSpots = () => async (dispatch) => {
     const response = await csrfFetch("/api/spots");
     const data = await response.json();
-    dispatch(getSpots(data.Spots));
+    //console.log("Data for GetAllSpots: --", data);
+    dispatch(getSpots(data.Spots));//data.Spots)); // data));
     return response;
   };
 
@@ -43,14 +68,52 @@ const getSpot = (spot) => {
 
 /**** REDUCER ****/
 
-const initialState = { Spots: [], Spot: null };
+const initialState = { allSpots: [], byId: {} };
 
 const spotReducer = (state = initialState, action) => {
+  let newState, newById = {};
   switch (action.type) {
     case GET_ALL_SPOTS:
-      return { ...state, Spots: action.payload };
-    case GET_A_SPOT:
-      return { ...state, Spot: action.payload };
+      //console.log("action.payload ,, ---", action.payload);
+      newState = { ...state, allSpots : action.payload, byId: {} };
+      //newState.allSpots = action.payload;
+      //newState.byId = {};
+
+      // newState.allSpots = [ //returns double,, commented for now
+      //   ...newState.allSpots,
+      //   ...action.payload
+      // ];
+
+      newById = {...newState.byId};
+      for(let spot of action.payload){
+        newById[spot.id] = spot;
+      }
+      newState.byId = newById;
+
+      //console.log("inside allSpots: ", newState.allSpots);
+      //console.log("inside byId: ", newState.byId);
+
+      return newState;
+
+    case POST_A_SPOT:
+      newState = { ...state };
+      newState.allSpots = [
+        ...newState.allSpots, 
+        action.payload
+      ];
+      //newState.byId = [ ...newState.byId, action.payload];
+      //for(let spot of action.payload.id){
+      //  newById[spot.id] = spot;
+      //}
+      //action.payload.id = action.payload;
+      newById = { ...newState.byId, [action.payload.id]: action.payload };
+      //, [action.payload.id]: action.payload };
+      newState.byId = newById;
+      
+      //console.log("inside allSpots: ", newState.allSpots);
+      //console.log("inside byId: ", newState.byId);
+    return newState;
+      
     default:
       return state;
   }

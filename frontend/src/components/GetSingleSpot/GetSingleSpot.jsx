@@ -7,8 +7,16 @@ import './GetSingleSpot.css';
 function GetSingleSpot() {
     const dispatch = useDispatch();
     const { spotId } = useParams();
-    const spot = useSelector((state) => state.spots.Spot);
-    //console.log("Inside GetSingleSpot: ", spot);
+    //const spot = useSelector((state) => state.spots.Spot);
+    //const allSpotsArray = useSelector((state)=>state.spots.allSpots);
+    //console.log("INSIDE GET SINGLE SPOT:--- ", allSpotsArray);
+    //const spot = useSelector((state)=>state.spots.byId);
+    //console.log("INSIDE byId:: ", spot);
+    
+    const spot = useSelector((state)=>state.spots.byId[spotId]);
+    //console.log("INSIDE byId:: ", spot);
+    //console.log("TESTTT spot[0].name: --- ", spot[0].name);
+   //console.log("TESTTT spot.name: --- ", spot.name);
     
     useEffect(() => {
         dispatch(fetchOneSpot(spotId));
@@ -20,15 +28,15 @@ function GetSingleSpot() {
 
     return (
         <div>
-            <h1>{spot[0].name}</h1>
+            <h1>{spot.name}</h1>
             <ul>
-                <h2>{spot[0].city}, {spot[0].state}</h2>
+                <h2>{spot.city}, {spot.state}</h2>
                 <div>
                     <li>
-                        <img src={spot[0].SpotImages[0].url} className="get-spot-image" />
+                        <img src={spot.previewImage} className="get-spot-image" />
                     </li>
                 </div>
-                <p>Hosted by {spot[0].Owner.firstName} {spot[0].Owner.lastName}</p>
+                {/* <p>Hosted by {spot.Owner.firstName} {spot.Owner.lastName}</p> */}
                 <p>{spot.description}</p>
                 <div>
                     <h3>{spot.price} / night</h3>

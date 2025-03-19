@@ -6,14 +6,17 @@ import './GetAllSpots.css';
 
 function GetAllSpots() {
   const dispatch = useDispatch();
-  //console.log("inside GetAllSpots: ", useSelector((state)=>state.spots.spots));
-  const spots = useSelector((state)=>state.spots.Spots);
+  //console.log("inside GetAllSpots: ", useSelector((state)=>state.spots.Spots));
+  const allSpotsArray = useSelector((state)=>state.spots.allSpots);
+  //console.log("INSIDE allSpots:: ", allSpotsArray);
+  const byIdArray = useSelector((state)=>state.spots.byId);
+  //console.log("INSIDE byId:: ", byIdArray);
 
   useEffect(() => {
     dispatch(fetchAllSpots());
   }, [dispatch]);
 
-  if(!spots) {
+  if(!allSpotsArray || !byIdArray) {
     return <h2>No spots found!!</h2>;
   }
 
@@ -21,7 +24,8 @@ return (
   <div>
     <h1>Get All Spots</h1>
     <ul>
-      {spots.map((spot) => (
+      {allSpotsArray.map((spot) => {
+      return (
         <Link key={spot.id} to={`/spots/${spot.id}`}>
         <li>
           {spot.previewImage && (
@@ -36,7 +40,8 @@ return (
 
         </li>
         </Link>
-      ))}
+      );
+    })}
     </ul>
   </div>
 );

@@ -5,6 +5,7 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
+import { Link } from 'react-router-dom';
 import './ProfileButton.css';
 
 function ProfileButton({ user }) {
@@ -52,6 +53,9 @@ function ProfileButton({ user }) {
             <li>{user.username}</li>
             <li>{user.firstName} {user.lastName}</li>
             <li>{user.email}</li>
+            <li>
+              <Link to="/spots/newSpot">Create a New Spot</Link>
+            </li>
             <li>
               <button onClick={logout}>Log Out</button>
             </li>

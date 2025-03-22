@@ -70,7 +70,7 @@ export const fetchAllSpotsThunk = () => async (dispatch) => {
 
 export const fetchOneSpotThunk = (spotId) => async (dispatch) => {
   try {
-    console.log("fetchone::: ", spotId);
+    //console.log("fetchone::: ", spotId);
     const res = await csrfFetch(`/api/spots/${spotId}`);
     if (res.ok) {
       const data = await res.json();
@@ -136,7 +136,7 @@ const spotReducer = (state = initialState, action) => {
     // return newState;
 
     case GET_A_SPOT:
-      console.log("actionnnnn ----", action.payload);
+      //console.log("actionnnnn ----", action.payload);
       newState = { ...state };
       newState.allSpots = [action.payload];
       //newById[spot.id] = spot
@@ -145,7 +145,7 @@ const spotReducer = (state = initialState, action) => {
       return newState;
 
     case POST_A_SPOT:
-      console.log("BEFORE: ---", action.payload);
+      //console.log("BEFORE: ---", action.payload);
       newState = { ...state };
 
       newState.allSpots = [...newState.allSpots, action.payload];

@@ -29,7 +29,7 @@ function GetSingleSpot() {
             retrieveOneSpot();
           }
 
-    }, [dispatch, spotId, isLoaded]);
+    }, [dispatch, spot, spotId, isLoaded]);
 
     //console.log("spot you clicked: ", spot);
     if(!isLoaded){

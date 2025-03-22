@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { createSpotThunk, fetchAllSpotsThunk } from '../../store/spots';
+import { createSpotThunk } from '../../store/spots';
 import './CreateNewSpot.css';
 
 function CreateNewSpot() {

@@ -6,6 +6,7 @@ import * as sessionActions from './store/session';
 import GetAllSpots from './components/GetAllSpots';
 import GetSingleSpot from './components/GetSingleSpot';
 import CreateNewSpot from './components/CreateNewSpot';
+import UpdateSpot from './components/UpdateSpot';
 
 function Layout() {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h1>Welcome!</h1>
+        element: <GetAllSpots />,
       },
       {
         path: '/spots',
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: '/spots/newSpot',
         element: <CreateNewSpot />,
+      },
+      {
+        path: '/spots/:spotId/updateSpot',
+        element: <UpdateSpot />,
       },
     ]
   }

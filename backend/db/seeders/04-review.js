@@ -32,14 +32,14 @@ module.exports = {
       {
         spotId: 3,
         userId: 3,
-        review: "Great experience, will come back again.",
-        stars: 4
+        review: "Decent stay, might come back again.",
+        stars: 3
       },
       {
         spotId: 3,
         userId: 2,
-        review: "Great experience, will come back again.",
-        stars: 4
+        review: "Horrible experience, will not come back again.",
+        stars: 1
       }
     ], { validate: true });
   },

@@ -15,19 +15,19 @@ module.exports = {
         spotId:1,
         userId:2,
         startDate: "2025-11-01",
-        endDate: "2025-11-15"
+        endDate: "2025-11-10"
       },
       {
         spotId:2,
         userId:2,
         startDate: "2026-10-12",
-        endDate: "2026-12-10"
+        endDate: "2026-10-14"
       },
       {
         spotId: 1,
         userId:1,
         startDate: "2025-10-10",
-        endDate: "2025-11-07"
+        endDate: "2025-10-12"
       },
     ], { validate: true });
   },

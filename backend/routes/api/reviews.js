@@ -10,7 +10,6 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 // Sequelize Imports 
 const { Review, ReviewImage, Spot, User } = require('../../db/models');
-const { ErrorHandler } = require('../../utils/errorHandler');
 
 const router = express.Router();
 
@@ -37,7 +36,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
 
         return res.json({ Reviews: reviews });
     } catch (error) {
-        next(new ErrorHandler("Failed to fetch reviews", 500, error.errors));
+        next(error);
     }
 });
 
@@ -48,8 +47,6 @@ router.get('/:spotId/reviews', async (req, res, next) => {
         const { spotId } = req.params;
 
         const spot = await Spot.findByPk(spotId);
-        if (!spot) throw new ErrorHandler("Spot couldn't be found", 404);
-
         const reviews = await Review.findAll({
             where: { spotId },
             include: [
@@ -76,16 +73,13 @@ router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
         const userId = req.user.id;
 
         const spot = await Spot.findByPk(spotId);
-        if (!spot) throw new ErrorHandler("Spot couldn't be found", 404);
+        if(!spot){
+            const error = new Error("SPOT EMPTY");
+        }
 
         const existingReview = await Review.findOne({ where: { spotId, userId } });
-        if (existingReview) throw new ErrorHandler("User already has a review for this spot", 500);
-
-        if (!review || !stars || stars < 1 || stars > 5) {
-            throw new ErrorHandler("Validation error", 400, {
-                review: "Review text is required",
-                stars: "Stars must be an integer from 1 to 5"
-            });
+        if(existingReview){
+            const error = new Error("ALREADY REVIEWD");
         }
 
         const newReview = await Review.create({
@@ -94,7 +88,7 @@ router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
             review,
             stars
         });
-        
+
         newReview.dataValues.createdAt = formatDate(newReview.createdAt);
         newReview.dataValues.updatedAt = formatDate(newReview.updatedAt);
 
@@ -112,13 +106,9 @@ router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
         const userId = req.user.id;
 
         const review = await Review.findByPk(reviewId);
-        if (!review) throw new ErrorHandler("Review couldn't be found", 404);
-
-        if (review.userId !== userId) throw new ErrorHandler("Forbidden", 403);
 
         const imageCount = await ReviewImage.count({ where: { reviewId } });
-        if (imageCount >= 10) throw new ErrorHandler("Maximum number of images for this resource was reached", 403);
-
+    
         const newImage = await ReviewImage.create({ reviewId, url });
 
         return res.json(newImage);
@@ -127,7 +117,6 @@ router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
     }
 });
 
-//  Edit a Review
 router.put('/:reviewId', requireAuth, async (req, res, next) => {
     try {
         const { reviewId } = req.params;
@@ -135,15 +124,12 @@ router.put('/:reviewId', requireAuth, async (req, res, next) => {
         const userId = req.user.id;
 
         const existingReview = await Review.findByPk(reviewId);
-        if (!existingReview) throw new ErrorHandler("Review couldn't be found", 404);
+        if(!existingReview){
+            const error = new Error("REVIEW DOESNT EXIST");
+        }
 
-        if (existingReview.userId !== userId) throw new ErrorHandler("Forbidden", 403);
-
-        if (!review || !stars || stars < 1 || stars > 5) {
-            throw new ErrorHandler("Validation error", 400, {
-                review: "Review text is required",
-                stars: "Stars must be an integer from 1 to 5"
-            });
+        if(existingReview.userId !== userId){
+            const error = new Error("USER IS NOT OWNER");
         }
 
         existingReview.review = review;
@@ -156,16 +142,19 @@ router.put('/:reviewId', requireAuth, async (req, res, next) => {
     }
 });
 
-//  Delete a Review
 router.delete('/:reviewId', requireAuth, async (req, res, next) => {
     try {
         const { reviewId } = req.params;
         const userId = req.user.id;
 
         const review = await Review.findByPk(reviewId);
-        if (!review) throw new ErrorHandler("Review couldn't be found", 404);
+        if(!review){
+            const error = new Error("REVIEW NON EXISTENT");
+        }
 
-        if (review.userId !== userId) throw new ErrorHandler("Forbidden", 403);
+        if(review.userId !== userId){
+            const error = new Error("USER IS NOT OWNER");
+        }
 
         await review.destroy();
 

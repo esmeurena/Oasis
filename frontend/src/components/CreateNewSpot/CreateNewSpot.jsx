@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { createSpot } from '../../store/spots';
+import { createSpotThunk, fetchAllSpotsThunk } from '../../store/spots';
 import './CreateNewSpot.css';
 
 function CreateNewSpot() {
@@ -18,9 +18,11 @@ function CreateNewSpot() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const spotData = { country, address, city, state, description, name, price };
-    const newSpot = await dispatch(createSpot(spotData));
-    //const newSpot = await dispatch(createSpot({ country, address, city, state, description, name, price }));
+    let newPrice = 777;
+    const spotData = { country, address, city, state, description, name, newPrice };
+    const newSpot = await dispatch(createSpotThunk(spotData));
+    //console.log("SHOULD HAVE IT TOO, IN CreateNewSpot.jsx: ", newSpot);
+    await dispatch(fetchAllSpotsThunk());
     navigate(`/spots/${newSpot.id}`);
   };
 
@@ -28,9 +30,9 @@ function CreateNewSpot() {
     <div>
       <h1>Create a New Spot</h1>
       <form onSubmit={handleSubmit}>
-        <label>
-          Country
-          <input 
+        <label className="spot-input">
+          <p className="spot-title-input">Country</p>
+          <input
             type="text" 
             placeholder="Country"
             value={country}
@@ -39,8 +41,8 @@ function CreateNewSpot() {
           />
         </label>
 
-        <label>
-          Street Address
+        <label className="spot-input">
+          <p className="spot-title-input">Street Address</p>
           <input 
             type="text" 
             placeholder="Street Address"
@@ -50,8 +52,8 @@ function CreateNewSpot() {
           />
         </label>
 
-        <label>
-          City
+        <label className="spot-input">
+          <p className="spot-title-input">City</p>
           <input 
             type="text" 
             placeholder="City"
@@ -61,8 +63,8 @@ function CreateNewSpot() {
           />
         </label>
 
-        <label>
-          State
+        <label className="spot-input">
+          <p className="spot-title-input">State</p>
           <input 
             type="text" 
             placeholder="State"
@@ -72,8 +74,8 @@ function CreateNewSpot() {
           />
         </label>
 
-        <label>
-          Description
+        <label className="spot-input">
+          <p className="spot-title-input">Description</p>
           <textarea 
             placeholder="Description"
             value={description}
@@ -82,8 +84,8 @@ function CreateNewSpot() {
           />
         </label>
 
-        <label>
-          Name for Spot
+        <label className="spot-input">
+          <p className="spot-title-input">Name for Spot</p>
           <input 
             type="text" 
             placeholder="Name"
@@ -93,8 +95,8 @@ function CreateNewSpot() {
           />
         </label>
 
-        <label>
-          Price
+        <label className="spot-input">
+          <p className="spot-title-input">Price</p>
           <input 
             type="number" 
             placeholder="Price"

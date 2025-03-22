@@ -1,34 +1,16 @@
 h1 {
   text-align: center;
+  margin-bottom: 30px;
+  color: #333;
 }
 
-ul {
-  display: flex;
-  list-style: none;
-  justify-content: center;
-  gap: 20px;
-}
-  
-li {
-  padding: 15px;
-  position: relative;
-  box-shadow: 0 2px 4px lightgray;
-}
-
-li:hover .tooltip {
-  display: block;
-}
-
-.tooltip {
-  display: none;
-  position: absolute;
-  top: 10px;
-  background-color: black;
-  color: white;
-}
-
-.spot-image {
-  height: auto;
+.spot-container-list {
+  display: grid;
+  grid: auto-flow / 1fr 1fr 1fr 1fr;
+  /* grid: 200px / auto-flow;
+  flex-direction: row;
+  flex-wrap: wrap; */
+  gap: 10px;
   width: 100%;
-  border-radius: 10px;
+  height: 100%;
 }

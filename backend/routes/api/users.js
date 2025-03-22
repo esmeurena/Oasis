@@ -1,6 +1,5 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const { ErrorHandler } = require('../../utils/errorHandler');
 
 //Utils imports
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
@@ -45,24 +44,10 @@ router.post('/', validateSignup, async (req, res, next) => {
         if (!lastName) errors.lastName = "Last Name is required";
         if (!password || password.length < 5) errors.password = "Password must be at least 5 characters";
 
-        if (Object.keys(errors).length > 0) {
-            throw new ErrorHandler("Bad Request", 400, errors);
-        }
-
         // Check if user exists
         const existingEmail = await User.findOne({ where: { email } });
-        if (existingEmail) {
-            throw new ErrorHandler("Email already exists", 500, {
-                email: "User with that email already exists"
-            });
-        }
 
         const existingUsername = await User.findOne({ where: { username } });
-        if (existingUsername) {
-            throw new ErrorHandler("Username already exists", 500, {
-                username: "User with that username already exists"
-            });
-        }
 
         const hashedPassword = bcrypt.hashSync(password);
         const user = await User.create({ firstName, lastName, email, username, hashedPassword });
@@ -90,9 +75,6 @@ router.get('/current', async (req, res, next) => {
     try {
         const userId = req.user.id;
         const user = await User.findByPk(userId);
-        if (!user) {
-            throw new ErrorHandler("User not found", 404);
-        }
         return res.json(user);
     } catch (error) {
         next(error);
@@ -105,9 +87,6 @@ router.put('/:userId', async (req, res, next) => {
         const userId = req.params.userId;
         const { firstName, lastName, email, username, password } = req.body;
         const user = await User.findByPk(userId);
-        if (!user) {
-            throw new ErrorHandler("User not found", 404);
-        }
         await user.update({ firstName, lastName, email, username, password });
         return res.json(user);
     } catch (error) {
@@ -120,9 +99,6 @@ router.delete('/:userId', async (req, res, next) => {
     try {
         const userId = req.params.userId;
         const user = await User.findByPk(userId);
-        if (!user) {
-            throw new ErrorHandler("User not found", 404);
-        }
         await user.destroy();
         return res.json({ message: "User successfully deleted" });
     } catch (error) {

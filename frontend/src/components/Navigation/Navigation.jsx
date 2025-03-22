@@ -7,17 +7,22 @@ function Navigation({ isLoaded }) {
   const sessionUser = useSelector(state => state.session.user);
 
   return (
-    <ul>
-      <li>
-        <NavLink to="/" className="nav-link">Home</NavLink>
-        <NavLink to="/spots" className="nav-link">Get All Spots</NavLink>
-      </li>
+    <nav className="navigation">
+      <div>
+        <img src="/dist/orange_logo.png" className="oasis-logo"/>
+      </div>
+      <div>
+        <div>
+          <NavLink to="/" className="nav-link">Home</NavLink>
+          <NavLink to="/spots" className="nav-link">Get All Spots</NavLink>
+        </div>
+      </div>
       {isLoaded && (
         <div className="profile-button">
-        <ProfileButton user={sessionUser} />
-      </div>
+          <ProfileButton user={sessionUser} />
+        </div>
       )}
-    </ul>
+    </nav>
   );
 }
 

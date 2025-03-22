@@ -1,0 +1,63 @@
+.get-spot-image {
+    max-width: 700px;
+    display: flex;
+    height: auto;
+}
+
+.cute-font-title {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    font-style: normal;
+}
+
+.cute-font-text {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: lighter;
+    font-style: normal;
+    font-size: 16px;
+}
+
+.location-review{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 700px;
+}
+
+.update-button{
+    padding: 20px;
+    text-decoration: none;
+
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 17px;
+}
+
+.all-images{
+    display: flex;
+    gap: 10px;
+    max-width: 100%;
+}
+
+.smaller-image{
+    width: 300px;
+}
+.small-images{
+    height: auto;
+}
+
+.reserve-box{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(254, 248, 249);
+    padding: 20px;
+    width: 200px;
+    position: fixed;
+    top: 80%;
+    right: 0;
+}

@@ -50,25 +50,27 @@ function ProfileButton({ user }) {
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
-            <li>{user.username}</li>
-            <li>{user.firstName} {user.lastName}</li>
-            <li>{user.email}</li>
-            <li>
-              <Link to="/spots/newSpot">Create a New Spot</Link>
-            </li>
-            <li>
-              <button onClick={logout}>Log Out</button>
-            </li>
+            <p>{user.username}</p>
+            <p>{user.firstName} {user.lastName}</p>
+            <p>{user.email}</p>
+            <div>
+              <Link to="/spots/newSpot" className="cute-font-button">Create a New Spot</Link>
+            </div>
+            <div>
+              <button className= "cute-font-button" onClick={logout}>Log Out</button>
+            </div>
           </>
         ) : (
           <>
             <OpenModalMenuItem
               itemText="Log In"
+              className= "cute-font-button"
               onItemClick={closeMenu}
               modalComponent={<LoginFormModal />}
             />
             <OpenModalMenuItem
               itemText="Sign Up"
+              className= "cute-font-button"
               onItemClick={closeMenu}
               modalComponent={<SignupFormModal />}
             />

@@ -7,7 +7,6 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 // Sequelize Imports 
 const { SpotImage, Spots} = require('../../db/models');
-const { ErrorHandler } = require('../../utils/errorHandler');
 const router = express.Router();
 
 //PROTECT INCOMING DATA FOR THE Create Spots ROUTE
@@ -17,9 +16,6 @@ router.delete('/:imageId', async (req, res, next) => {
         const imageId = req.params.imageId;
         const imageToDelete = await SpotImage.findByPk(imageId)
         
-        if(!imageToDelete){
-            throw new ErrorHandler("Spot Image coudn't be found",404)
-        }
         await imageToDelete.destroy()
         return res.json("Successfully deleted")
 

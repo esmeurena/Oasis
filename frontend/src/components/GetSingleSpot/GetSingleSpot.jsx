@@ -1,48 +1,37 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchOneSpot } from '../../store/spots';
+import { fetchOneSpotThunk } from '../../store/spots';
+import SingleSpotComponent from './SingleSpotComponent';
 import './GetSingleSpot.css';
 
 function GetSingleSpot() {
     const dispatch = useDispatch();
     const { spotId } = useParams();
-    //const spot = useSelector((state) => state.spots.Spot);
-    //const allSpotsArray = useSelector((state)=>state.spots.allSpots);
-    //console.log("INSIDE GET SINGLE SPOT:--- ", allSpotsArray);
-    //const spot = useSelector((state)=>state.spots.byId);
-    //console.log("INSIDE byId:: ", spot);
     
-    const spot = useSelector((state)=>state.spots.byId[spotId]);
-    //console.log("INSIDE byId:: ", spot);
-    //console.log("TESTTT spot[0].name: --- ", spot[0].name);
-   //console.log("TESTTT spot.name: --- ", spot.name);
-    
-    useEffect(() => {
-        dispatch(fetchOneSpot(spotId));
-    }, [dispatch, spotId]);
+    const spot = useSelector((state) => state.spots.byId[spotId]);
+    //console.log("WE GET: --- ", spot);
+    const [isLoaded, setIsLoaded] = useState(false);
 
-    if (!spot) {
-        return <div>No Spot Found!!</div>;
-    }
+    useEffect(() => {
+
+        const retrieveOneSpot = async () => {
+            //console.log("11111 ---SPOT-ID NOT INSIDE: ### -", spotId);
+            await dispatch(fetchOneSpotThunk(spotId));
+            setIsLoaded(true);
+        }
+
+        if (!isLoaded) {
+            retrieveOneSpot();
+          }
+
+    }, [dispatch, spotId, isLoaded]);
+
+    //console.log("spot you clicked: ", spot);
 
     return (
         <div>
-            <h1>{spot.name}</h1>
-            <ul>
-                <h2>{spot.city}, {spot.state}</h2>
-                <div>
-                    <li>
-                        <img src={spot.previewImage} className="get-spot-image" />
-                    </li>
-                </div>
-                {/* <p>Hosted by {spot.Owner.firstName} {spot.Owner.lastName}</p> */}
-                <p>{spot.description}</p>
-                <div>
-                    <h3>{spot.price} / night</h3>
-                    <button onClick={() => alert('Feature coming soon!!')}>Reserve!!</button>
-                </div>
-            </ul>
+            <SingleSpotComponent spot={spot} />
         </div>
     );
 }

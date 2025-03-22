@@ -15,14 +15,14 @@ function CreateNewSpot() {
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [previewImage, setPreviewImage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let newPrice = 777;
-    const spotData = { country, address, city, state, description, name, newPrice };
+    const spotData = { country, address, city, state, description, name, price, previewImage };
     const newSpot = await dispatch(createSpotThunk(spotData));
     //console.log("SHOULD HAVE IT TOO, IN CreateNewSpot.jsx: ", newSpot);
-    await dispatch(fetchAllSpotsThunk());
+    // await dispatch(fetchAllSpotsThunk());
     navigate(`/spots/${newSpot.id}`);
   };
 
@@ -102,6 +102,17 @@ function CreateNewSpot() {
             placeholder="Price"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
+            required
+          />
+        </label>
+
+        <label className="spot-input">
+          <p className="spot-title-input">PreviewImage</p>
+          <input 
+            type="text" 
+            placeholder="PreviewImage"
+            value={previewImage}
+            onChange={(e) => setPreviewImage(e.target.value)}
             required
           />
         </label>

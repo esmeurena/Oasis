@@ -79,10 +79,6 @@ const validateSpots = [
         .exists({ checkFalsy: true })
         .isLength({ max: 256 })
         .withMessage('Description must be less than 256 characters'),
-    check('price')
-        .exists({ checkFalsy: true })
-        .isFloat({ min: 0.01 })
-        .withMessage('Price per day must be a positive number'),
     handleValidationErrors
 ];
 
@@ -314,9 +310,9 @@ router.get('/:spotId', async (req, res, next) => {
             price: spot.price,
             createdAt: spot.createdAt,
             updatedAt: spot.updatedAt,
-            numReviews: numReviews,
+            numReviews: totalRev,
             aveReview: avgRev,
-            SpotImages: spot.SpotImages,
+            previewImage: spot.SpotImages[0].url,
             Owner: spot.Owner,
         };
 
@@ -429,15 +425,51 @@ router.get('/:spotId/bookings', async (req, res, next) => {
 router.post('/', validateSpots, async (req, res, next) => {
     try {
         const userId = await req.user.id;
-        const { address, city, state, country, lat, lng, name, description, price } = req.body;
+        const { address, city, state, country, lat, lng, name, description, price, previewImage } = req.body;
+
 
         const newSpot = await Spot.create({
             userId: userId, address, city, state, country, lat, lng, name,
             description, price
         });
+        const newImage = await SpotImage.create({ spotId : newSpot.id, url : previewImage, preview : true });
+
+        /*
+        const spot = await Spot.findByPk(spotId,{
+            include: [{
+                model:SpotImage,
+                attributes:['spotId','url','preview']
+            },{
+                model:User,
+                as:"Owner",
+                attributes: {exclude:['username','email','hashedPassword','createdAt','updatedAt']}
+            }]
+        });
+        */
+
+        const prettyDataSpot = {
+            id: spot.id,
+            userId: spot.userId,
+            address: spot.address,
+            city: spot.city,
+            state: spot.state,
+            country: spot.country,
+            lat: spot.lat,
+            lng: spot.lng,
+            name: spot.name,
+            description: spot.description,
+            price: spot.price,
+            createdAt: spot.createdAt,
+            updatedAt: spot.updatedAt,
+            numReviews: totalRev,
+            aveReview: avgRev,
+            previewImage: spot.SpotImages[0].url,
+            Owner: spot.Owner,
+        };
 
         const spotWithNoUserId = newSpot.toJSON();
-        delete spotWithNoUserId.userId;
+        spotWithNoUserId.previewImage = newImage.url;
+        // delete spotWithNoUserId.userId;
 
         return res.status(201).json(spotWithNoUserId);
     } catch (error) {

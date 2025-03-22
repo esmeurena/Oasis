@@ -21,13 +21,20 @@ function GetSingleSpot() {
             setIsLoaded(true);
         }
 
-        if (!isLoaded) {
+        if(spot){
+            setIsLoaded(true);
+        }
+
+        if (!isLoaded && !spot) {
             retrieveOneSpot();
           }
 
     }, [dispatch, spotId, isLoaded]);
 
     //console.log("spot you clicked: ", spot);
+    if(!isLoaded){
+        return <h1>Loading....</h1>
+    }
 
     return (
         <div>

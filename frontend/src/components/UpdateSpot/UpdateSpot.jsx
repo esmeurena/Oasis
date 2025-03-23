@@ -1,35 +1,32 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchOneSpotThunk } from '../../store/spots';
+// import { fetchOneSpotThunk } from '../../store/spots';
 import { updateSpotThunk } from '../../store/spots';
 import './UpdateSpot.css';
 
 function UpdateSpot() {
+    //console.log("we innnnnnn");
     const dispatch = useDispatch();
-
     const navigate = useNavigate();
+
     const { spotId } = useParams();
-    //console.log("SPOT ID: ", spotId);
-    const spot = useSelector(state => state.spots.byId[spotId]);
-    //console.log("SPOT --- : ", spot);
+    const spot = useSelector((state) => state.spots.byId[spotId]);
 
-    //let [country, setCountry] = useState(); // ("");
-    //let [country, setCountry] = useState("");
-    let [country, setCountry] = useState("");
-    //console.log("inside UpdateSpots::: ---", country);
-    let [address, setAddress] = useState("");
-    let [city, setCity] = useState("");
-    let [state, setState] = useState("");
-    let [description, setDescription] = useState("");
-    let [name, setName] = useState("");
-    let [price, setPrice] = useState("");
+    const [country, setCountry] = useState("");
+    const [address, setAddress] = useState("");
+    const [city, setCity] = useState("");
+    const [state, setState] = useState("");
+    const [description, setDescription] = useState("");
+    const [name, setName] = useState("");
+    const [price, setPrice] = useState("");
+    const [previewImage, setPreviewImage] = useState("");
 
-    useEffect(() => {
-        //console.log("FETCHONETHUNK", spotId);
-        dispatch(fetchOneSpotThunk(spotId));
+    // useEffect(() => {
+    //     console.log("useeffect1");
+    //     dispatch(fetchOneSpotThunk(spotId));
 
-    }, [dispatch, spotId]);
+    // }, [dispatch, spotId]);
 
     // const [isLoaded, setIsLoaded] = useState(false);
 
@@ -47,28 +44,28 @@ function UpdateSpot() {
     // }, [dispatch, isLoaded]);
 
     useEffect(() => {
+        //console.log("useeffect2");
         if (spot) {
-            //console.log("USEEFFECT---", spot);
-            //console.log("USEEFFECT SPOT-ID---", spotId);//no
             setCountry(spot.country);
             setAddress(spot.address);
             setCity(spot.city);
             setState(spot.state);
             setDescription(spot.description);
             setName(spot.name);
-            setPrice(spot.price);
+            setPrice(parseInt(spot.price));
+            setPreviewImage(spot.previewImage);
         }
     }, [spot]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        let newPrice = 122;
-        const updatedSpot = { country, address, city, state, description, name, newPrice };
+        //let newPrice = 122;
+        const updatedSpotData = { country, address, city, state, description, name, price, previewImage };
         //console.log("spotID, updatedSPOT :::----", spotId, updatedSpot);
-        await dispatch(updateSpotThunk(spotId, updatedSpot));
-
-        navigate(`/spots/${spotId}`);
+        const updatedSpot = await dispatch(updateSpotThunk(spotId, updatedSpotData));
+        //console.log("updatedspot ---",updatedSpot.spot.id);
+        navigate(`/spots/${updatedSpot.spot.id}`);
     };
 
     return (
@@ -147,6 +144,17 @@ function UpdateSpot() {
                         placeholder="Price"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
+                        required
+                    />
+                </label>
+
+                <label className="spot-input">
+                    <p className="spot-title-input">PreviewImage</p>
+                    <input
+                        type="text"
+                        placeholder="PreviewImage"
+                        value={previewImage}
+                        onChange={(e) => setPreviewImage(e.target.value)}
                         required
                     />
                 </label>

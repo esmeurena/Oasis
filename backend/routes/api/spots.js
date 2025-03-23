@@ -101,6 +101,18 @@ router.get('/', async (req, res, next) => {
         if (minPrice === undefined) minPrice = 0;
         if (maxPrice === undefined) maxPrice = 100000000;
 
+        /*
+const spot = await Spot.findByPk(spotId,{
+            include: [{
+                model:SpotImage,
+                attributes:['spotId','url','preview']
+            },{
+                model:User,
+                as:"Owner",
+                attributes: {exclude:['username','email','hashedPassword','createdAt','updatedAt']}
+            }]
+        });
+        */
 
         const spots = await Spot.findAll({
             where: {
@@ -120,16 +132,18 @@ router.get('/', async (req, res, next) => {
             },
 
             include: [{
-                model: SpotImage,
-                where: { preview: true },
-                attributes: ['url']
+                model:SpotImage,
+                attributes:['spotId','url','preview']
+            },{
+                model:User,
+                as:"Owner",
+                attributes: {exclude:['username','email','hashedPassword','createdAt','updatedAt']}
             }],
             ...paginationObj
         })
         const resArr = [];
         for (let spot of spots) {
-            const spotBody = spot.toJSON();
-            const reviews = await Review.findAll({ where: { spotId: spotBody.id } });
+            const reviews = await Review.findAll({ where: { spotId: spot.id } });
             let aveReview = 0;
             let totalRevs = 0;
             for (let review of reviews) {
@@ -139,20 +153,40 @@ router.get('/', async (req, res, next) => {
             if (totalRevs > 0) {
                 aveReview = aveReview / totalRevs;
             }
+            const prettyDataSpot = {
+                id: spot.id,
+                userId: spot.userId,
+                address: spot.address,
+                city: spot.city,
+                state: spot.state,
+                country: spot.country,
+                lat: spot.lat,
+                lng: spot.lng,
+                name: spot.name,
+                description: spot.description,
+                price: spot.price,
+                createdAt: spot.createdAt,
+                updatedAt: spot.updatedAt,
+                numReviews: totalRevs,
+                aveReview: aveReview,
+                previewImage: spot.SpotImages[0].url,
+                Owner: spot.Owner,
+            };
+            //const spotBody = spot.toJSON();
+            //const reviews = await Review.findAll({ where: { spotId: spotBody.id } });
 
-            spotBody.aveReview = aveReview;
+            //spotBody.aveReview = aveReview;
 
-            if (spotBody.SpotImages && spotBody.SpotImages.length > 0) {
-                spotBody.previewImage = spotBody.SpotImages[0].url;
-            }
+            // if (spot.SpotImages && spot.SpotImages.length > 0) {
+            //     prettyDataSpot.previewImage = spot.SpotImages[0].url;
+            // }
             //else{
             //     spotBody.previewImage = ??;
             // }
 
-            delete spotBody.SpotImages;
+            //delete spotBody.SpotImages;
 
-            resArr.push(spotBody);
-
+            resArr.push(prettyDataSpot);
         }
         if (req.query.page && req.query.size) {
             return res.json({ Spots: resArr, page: page, size: size });
@@ -171,16 +205,20 @@ router.get('/current', async (req, res, next) => {
         }
 
         const currentUser = await req.user.id;
-        const checkForSpots = await Spot.findByPk(currentUser);
-        if (!checkForSpots) {
-            throw new Error("This User Has No Spots", 404);
-        }
+        // const checkForSpots = await Spot.findByPk(currentUser);
+        // if (!checkForSpots) {
+        //     throw new Error("This User Has No Spots", 404);
+        // }
         const userSpots = await Spot.findAll({
             where: { userId: currentUser },
             include: [{
-                model: SpotImage,
-            },
-            ]
+                model:SpotImage,
+                attributes:['spotId','url','preview']
+            },{
+                model:User,
+                as:"Owner",
+                attributes: {exclude:['username','email','hashedPassword','createdAt','updatedAt']}
+            }],
         })
 
         let resArr = []
@@ -201,7 +239,7 @@ router.get('/current', async (req, res, next) => {
                 spotBody.aveRating = aveRating / reviews.length;
             }
             if (spotBody.SpotImages[0]) {
-                spotBody.previewImage = spotBody.SpotImages[0];
+                spotBody.previewImage = spotBody.SpotImages[0].url;
             } else {
                 spotBody.previewImage = "no previewImage";
             }
@@ -232,53 +270,9 @@ router.get('/:spotId', async (req, res, next) => {
             }]
         });
 
-        // const spots = await Spot.findAll({where:{id:spotId}, include: [{
-        //     model:SpotImage,
-        //     attributes:{exclude:['spotId','createdAt','updatedAt']}
-        // },{
-        //     model:User,
-        //     as:"Owner",
-        //     attributes: {exclude:['username','email','hashedPassword','createdAt','updatedAt']}
-        // }]});
-
         if(!spot){
             throw new Error("NO SPOT");
         }
-
-        // const resArr = []
-        // for (let eachSpot of spots) {
-        //     const spotBody = eachSpot.toJSON();
-        //     const reviews = await Review.findAll({ where: {spotId:spotBody.id}});
-        //     let aveReview = 0;
-        //     let numReviews = 0;
-        //     for(let review of reviews){
-        //         aveReview += review.stars;
-        //         numReviews ++;
-        //     }
-        //     //did this manually cuz I couldn't get aveReviews and numReviews to go before spotReview
-        //     let prettyBody = {};
-        //     prettyBody.id = spotBody.id;
-        //     prettyBody.userId = spotBody.userId;
-        //     prettyBody.address = spotBody.address;
-        //     prettyBody.city = spotBody.city;
-        //     prettyBody.state = spotBody.state;
-        //     prettyBody.country = spotBody.country;
-        //     prettyBody.lat = spotBody.id;
-        //     prettyBody.lng = spotBody.lng;
-        //     prettyBody.name = spotBody.name;
-        //     prettyBody.description = spotBody.description;
-        //     prettyBody.price = spotBody.price;
-        //     prettyBody.createdAt = spotBody.createdAt;
-        //     prettyBody.updatedAt = spotBody.updatedAt;
-        //     prettyBody.numReviews = numReviews;
-        //     prettyBody.aveReview = aveReview;
-        //     prettyBody.SpotImages = spotBody.SpotImages;
-        //     prettyBody.Owner = spotBody.Owner;
-
-        //     spotBody.SpotImages = spotBody.SpotImages;
-        //     resArr.push(prettyBody);
-
-        // }
 
         const allReviews = await Review.findAll({ 
             where: { 
@@ -315,28 +309,6 @@ router.get('/:spotId', async (req, res, next) => {
             previewImage: spot.SpotImages[0].url,
             Owner: spot.Owner,
         };
-
-        // const spotBody = spot.toJSON();
-        // const reviews = await Review.findAll({
-        //     where: {
-        //         userId: spotBody.id
-        //     }
-        // });
-        // let aveRating = 0;
-        // for (let review of reviews) {
-        //     aveRating += review.stars;
-        // }
-        // if (reviews.length < 1) {
-        //     spotBody.aveRating = 0;
-        // } else {
-        //     spotBody.aveRating = aveRating / reviews.length;
-        // }
-        // if (spotBody.SpotImages[0]) {
-        //     spotBody.previewImage = spotBody.SpotImages[0];
-        // } else {
-        //     spotBody.previewImage = "no previewImage";
-        // }
-        // delete spotBody.SpotImages;
 
         return res.json(prettyDataSpot);
     } catch (error) {
@@ -428,11 +400,11 @@ router.post('/', validateSpots, async (req, res, next) => {
         const { address, city, state, country, lat, lng, name, description, price, previewImage } = req.body;
 
 
-        const newSpot = await Spot.create({
+        const spot = await Spot.create({
             userId: userId, address, city, state, country, lat, lng, name,
             description, price
         });
-        const newImage = await SpotImage.create({ spotId : newSpot.id, url : previewImage, preview : true });
+        const newImage = await SpotImage.create({ spotId : spot.id, url : previewImage, preview : true });
 
         /*
         const spot = await Spot.findByPk(spotId,{
@@ -446,7 +418,7 @@ router.post('/', validateSpots, async (req, res, next) => {
             }]
         });
         */
-
+        let avgRev = 0, totalRev = 0;
         const prettyDataSpot = {
             id: spot.id,
             userId: spot.userId,
@@ -463,15 +435,15 @@ router.post('/', validateSpots, async (req, res, next) => {
             updatedAt: spot.updatedAt,
             numReviews: totalRev,
             aveReview: avgRev,
-            previewImage: spot.SpotImages[0].url,
-            Owner: spot.Owner,
+            previewImage: previewImage,
+            //Owner: spot.Owner,
         };
 
-        const spotWithNoUserId = newSpot.toJSON();
-        spotWithNoUserId.previewImage = newImage.url;
+        //const spotWithNoUserId = newSpot.toJSON();
+        //spotWithNoUserId.previewImage = newImage.url;
         // delete spotWithNoUserId.userId;
 
-        return res.status(201).json(spotWithNoUserId);
+        return res.status(201).json(prettyDataSpot);
     } catch (error) {
         next(error);
     }
@@ -539,13 +511,13 @@ router.put('/:spotId', validateSpots, async (req, res, next) => {
         const spotId = req.params.spotId;
         const userId = req.user.id;
 
-        const { address, city, state, country, lat, lng, name, description, price } = req.body;
+        const { address, city, state, country, lat, lng, name, description, price, previewImage} = req.body;
 
         const spotToUpdate = await Spot.findByPk(spotId);
         if (spotToUpdate.userId !== userId) {
             throw new Error("USER IS NOT OWNER");
         }
-        await spotToUpdate.update({ userId, address, city, state, country, lat, lng, name, description, price });
+        await spotToUpdate.update({ userId, address, city, state, country, lat, lng, name, description, price, previewImage });
         return res.json({ spot: spotToUpdate });
     } catch (error) {
         next(error)

@@ -7,6 +7,7 @@ import GetAllSpots from './components/GetAllSpots';
 import GetSingleSpot from './components/GetSingleSpot';
 import CreateNewSpot from './components/CreateNewSpot';
 import UpdateSpot from './components/UpdateSpot';
+import SpotManagement from './components/SpotManagement'
 
 function Layout() {
   const dispatch = useDispatch();
@@ -47,8 +48,12 @@ const router = createBrowserRouter([
         element: <CreateNewSpot />,
       },
       {
-        path: '/spots/:spotId/updateSpot',
+        path: '/spots/:spotId/update',
         element: <UpdateSpot />,
+      },
+      {
+        path: '/spots/spotManagement',
+        element: <SpotManagement />,
       },
     ]
   }

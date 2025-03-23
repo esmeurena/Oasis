@@ -35,6 +35,7 @@ function GetSingleSpot() {
     if(!isLoaded){
         return <h1>Loading....</h1>
     }
+    //console.log("INSIDE THIS SPOT", spot.id);
 
     return (
         <div>

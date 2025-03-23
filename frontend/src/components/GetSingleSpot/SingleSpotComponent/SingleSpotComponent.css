@@ -61,3 +61,38 @@
     top: 80%;
     right: 0;
 }
+
+.side-by-side {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.review-card {
+    border: 1px solid lightgray;
+    padding: 10px;
+    box-shadow: 0 2px 4px pink;
+}
+
+.review-align {
+    display: flex;
+    justify-content: space-between;
+    color: darkgray;
+
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    color: rgb(106, 75, 94);
+}
+
+.review-date {
+    font-size: 15px;
+    color: gray;
+}
+
+.cute-font {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    color: rgb(106, 75, 94);
+}

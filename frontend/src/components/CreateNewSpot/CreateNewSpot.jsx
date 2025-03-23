@@ -7,7 +7,7 @@ import './CreateNewSpot.css';
 function CreateNewSpot() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const [country, setCountry] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
@@ -40,100 +40,116 @@ function CreateNewSpot() {
   return (
     <div>
       <h1>Create a New Spot</h1>
-    
-    <button onClick={stopWastingTime}>Stop Wasting Time</button>
+
+      <button onClick={stopWastingTime}>Stop Wasting Time</button>
 
       <form onSubmit={handleSubmit}>
-        <label className="spot-input">
-          <p className="spot-title-input">Country</p>
-          <input
-            type="text" 
-            placeholder="Country"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-            required
-          />
-        </label>
+        <div>
+          <h2>Where's your place located?</h2>
+          <p>Guests will only get your exact address once they booked a reservation.</p>
+          <label className="spot-input">
+            <p className="spot-title-input">Country</p>
+            <input
+              type="text"
+              placeholder="Country"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              required
+            />
+          </label>
 
-        <label className="spot-input">
-          <p className="spot-title-input">Street Address</p>
-          <input 
-            type="text" 
-            placeholder="Street Address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            required
-          />
-        </label>
+          <label className="spot-input">
+            <p className="spot-title-input">Street Address</p>
+            <input
+              type="text"
+              placeholder="Street Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+          </label>
 
-        <label className="spot-input">
-          <p className="spot-title-input">City</p>
-          <input 
-            type="text" 
-            placeholder="City"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            required
-          />
-        </label>
+          <label className="spot-input">
+            <p className="spot-title-input">City</p>
+            <input
+              type="text"
+              placeholder="City"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              required
+            />
+          </label>
 
-        <label className="spot-input">
-          <p className="spot-title-input">State</p>
-          <input 
-            type="text" 
-            placeholder="State"
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className="spot-input">
-          <p className="spot-title-input">Description</p>
-          <textarea 
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className="spot-input">
-          <p className="spot-title-input">Name for Spot</p>
-          <input 
-            type="text" 
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className="spot-input">
-          <p className="spot-title-input">Price</p>
-          <input 
-            type="number" 
-            placeholder="Price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className="spot-input">
-          <p className="spot-title-input">PreviewImage</p>
-          <input 
-            type="text" 
-            placeholder="PreviewImage"
-            value={previewImage}
-            onChange={(e) => setPreviewImage(e.target.value)}
-            required
-          />
-        </label>
+          <label className="spot-input">
+            <p className="spot-title-input">State</p>
+            <input
+              type="text"
+              placeholder="State"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <h2>Describe your place to guests</h2>
+          <p>Mention the best features of your space, any special amentities like fast wifi or parking, and what you love about the neighborhood.</p>
+          <label className="spot-input">
+            <p className="spot-title-input">Description</p>
+            <textarea
+              placeholder="Please write at least 30 characters"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <h2>Create a title for your spot</h2>
+          <p>Catch guests' attention with a spot title that highlights what makes your place special.</p>
+          <label className="spot-input">
+            <p className="spot-title-input">Name for Spot</p>
+            <input
+              type="text"
+              placeholder="Name of your spot"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <h2>Set a base price for your spot</h2>
+          <p>Competitive pricing can help your listing stand out and rank higher in search results.</p>
+          <label className="spot-input">
+            <p className="spot-title-input">Price</p>
+            <input
+              type="number"
+              placeholder="Price per night (USD)"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <h2>Liven up your spot with photos</h2>
+          <p>Submit a link to at least one photo to publish your spot.</p>
+          <label className="spot-input">
+            <p className="spot-title-input">PreviewImage</p>
+            <input
+              type="text"
+              placeholder="Preview Image URL"
+              value={previewImage}
+              onChange={(e) => setPreviewImage(e.target.value)}
+              required
+            />
+          </label>
+        </div>
 
         <button type="submit">Create Spot</button>
       </form>
-    </div>
+    </div >
   );
 }
 

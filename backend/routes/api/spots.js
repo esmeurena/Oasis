@@ -236,7 +236,7 @@ router.get('/current', async (req, res, next) => {
             if (reviews.length < 1) {
                 spotBody.aveRating = 0;
             } else {
-                spotBody.aveRating = aveRating / reviews.length;
+                spotBody.aveRating = (aveRating / reviews.length).toFixed(1);
             }
             if (spotBody.SpotImages[0]) {
                 spotBody.previewImage = spotBody.SpotImages[0].url;
@@ -286,7 +286,7 @@ router.get('/:spotId', async (req, res, next) => {
         }
     
         if(totalRev > 0){
-            avgRev = avgRev / totalRev;
+            avgRev = (avgRev / totalRev).toFixed(1);
         }
 
     
@@ -317,39 +317,39 @@ router.get('/:spotId', async (req, res, next) => {
 });
 
 
-// Done
-router.get('/:spotId/reviews', async (req, res, next) => {
-    try {
-        const spotId = req.params.spotId;
+// // Done
+// router.get('/:spotId/reviews', async (req, res, next) => {
+//     try {
+//         const spotId = req.params.spotId;
 
-        const reviews = await Review.findAll({
-            where: {
-                spotId: spotId
-            },
-            include: [
-                { model: User,
-                    attributes:{exclude:['username','hashedPassword','email','createdAt','updatedAt']}
-                },
-                { model: ReviewImage,
-                    attributes:{exclude:['reviewId','createdAt','updatedAt']}
-                }
-            ]
-        });
+//         const reviews = await Review.findAll({
+//             where: {
+//                 spotId: spotId
+//             },
+//             include: [
+//                 { model: User,
+//                     attributes:{exclude:['username','hashedPassword','email','createdAt','updatedAt']}
+//                 },
+//                 { model: ReviewImage,
+//                     attributes:{exclude:['reviewId','createdAt','updatedAt']}
+//                 }
+//             ]
+//         });
 
-        let updatedReviews = [];
-        for (let review of reviews) {
-            const updatedReview = review.toJSON();
-           if(!updatedReview.ReviewImage){
-            delete updatedReview.ReviewImage;
-           }
-            updatedReviews.push(updatedReview);
-        }
+//         let updatedReviews = [];
+//         for (let review of reviews) {
+//             const updatedReview = review.toJSON();
+//            if(!updatedReview.ReviewImage){
+//             delete updatedReview.ReviewImage;
+//            }
+//             updatedReviews.push(updatedReview);
+//         }
 
-        return res.json({ Reviews: updatedReviews });
-    } catch (error) {
-        next(error);
-    }
-})
+//         return res.json({ Reviews: updatedReviews });
+//     } catch (error) {
+//         next(error);
+//     }
+// })
 
 // DONE
 router.get('/:spotId/bookings', async (req, res, next) => {

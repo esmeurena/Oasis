@@ -52,14 +52,40 @@ router.get('/:spotId/reviews', async (req, res, next) => {
             include: [
                 { model: User, attributes: ['id', 'firstName', 'lastName'] },
                 { model: ReviewImage, attributes: ['id', 'url'] }
-            ]
-        });
-        reviews.forEach(review => {
-            review.dataValues.createdAt = formatDate(review.createdAt);
-            review.dataValues.updatedAt = formatDate(review.updatedAt);
+            ],
+            order: [['createdAt', 'DESC']],
         });
 
-        return res.json({ Reviews: reviews });
+        // for(let i = 0; i < reviews.length; i++){
+        //     for(let j = 0; j < reviews.length - 1; j++){
+        //         let revs = reviews[j];
+        //         reviews[j] = reviews[j + 1];
+        //         reviews[j + 1] = revs;
+        //     }
+        // }
+
+        // reviews.forEach(review => {
+        //     review.dataValues.createdAt = formatDate(review.createdAt);
+        //     review.dataValues.updatedAt = formatDate(review.updatedAt);
+        // });
+
+        // let avgRev = 0, totalRev = 0;
+        // for (let review of reviews) {
+        //     avgRev += review.stars;
+        //     totalRev++;
+        // }
+
+        // if (totalRev > 0) {
+        //     avgRev = (avgRev / totalRev).toFixed(1);
+
+        // }
+        // const reviewsData = {
+        //     avgReviews: avgRev,
+        //     totalReviews: totalRev
+        // };
+
+        return res.json({reviews});
+        //return res.json({ Reviews: reviews });
     } catch (error) {
         next(error);
     }

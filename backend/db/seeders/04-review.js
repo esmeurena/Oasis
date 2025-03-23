@@ -31,7 +31,7 @@ module.exports = {
       },
       {
         spotId: 3,
-        userId: 3,
+        userId: 4,
         review: "Decent stay, might come back again.",
         stars: 3
       },
@@ -40,7 +40,13 @@ module.exports = {
         userId: 2,
         review: "Horrible experience, will not come back again.",
         stars: 1
-      }
+      },
+      {
+        spotId: 1,
+        userId: 3,
+        review: "This place was very average.",
+        stars: 3
+      },
     ], { validate: true });
   },
 

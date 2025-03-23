@@ -1,0 +1,61 @@
+.spot-image {
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.individual-spot-list {
+    padding: 1px;
+    position: relative;
+}
+
+.avg-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tooltip {
+    display: none;
+    position: fixed;
+    /* top: 1px; */
+    background-color: darkgray;
+    color: white;
+    border-radius: 5px;
+}
+
+.individual-spot-list:hover .tooltip {
+    display: block;
+}
+
+.cute-font-title {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    color: rgb(72, 72, 72);
+}
+
+.cute-font-text {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: lighter;
+    font-style: normal;
+    font-size: 16px;
+    color: rgb(88, 88, 88);
+}
+
+.red-button-yes {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.gray-button-no {
+    background-color: darkgray;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}

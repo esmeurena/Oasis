@@ -5,9 +5,11 @@ import { csrfFetch } from './csrf';
 /**** ACTION TYPES ****/
 
 const GET_ALL_SPOTS = "spots/getSpotsAction";
-const GET_A_SPOT = "spots/getSpot";
+const GET_A_SPOT = "spots/getSpotAction";
 const POST_A_SPOT = "spots/createSpotAction"
 const UPDATE_A_SPOT = "spot/updateSpotAction"
+const GET_CURRENT_SPOTS = "spot/getCurrentSpotsAction";
+const DELETE_A_SPOT = "spot/deleteSpotAction";
 
 /**** ACTION CREATORS ****/
 
@@ -39,21 +41,36 @@ const getSpotAction = (spot) => {
   };
 };
 
+const getCurrentSpotsAction = (spots) => {
+  return {
+    type: GET_CURRENT_SPOTS,
+    payload: spots
+  };
+};
+
+const deleteSpotAction = (spot) => {
+  return {
+    type: DELETE_A_SPOT,
+    payload: spot
+  };
+};
+
 /**** THUNKS ****/
 
 export const createSpotThunk = (userSpotInput) => async (dispatch) => {
   let { country, address, city, state, description, name, price, previewImage } = userSpotInput;
-  //console.log("price", price);
+  //console.log("before price", price);
   price = parseInt(price);
+  //console.log("after price", price);
   let lat = 3, lng = 3;
   const response = await csrfFetch("/api/spots", {
     method: "POST",
     body: JSON.stringify({ address, city, state, country, lat, lng, name, description, price, previewImage })
   });
-  //console.log("response ---", response);
+  console.log("response ---", response);
 
   const data = await response.json();
-  //console.log("SHOULD HAVE CHANGES", data);
+  console.log("data ---", data);
   dispatch(createSpotAction(data));//try data.Spots
   //console.log("SHOULD HAVE CHANGES", data);
   //dispatch(getSpotsAction([data]));
@@ -71,11 +88,11 @@ export const fetchAllSpotsThunk = () => async (dispatch) => {
 export const fetchOneSpotThunk = (spotId) => async (dispatch) => {
   try {
     //console.log("fetchone::: ", spotId);
-    const res = await csrfFetch(`/api/spots/${spotId}`);
-    if (res.ok) {
-      const data = await res.json();
+    const response = await csrfFetch(`/api/spots/${spotId}`);
+    if (response.ok) {
+      const data = await response.json();
       dispatch(getSpotAction(data));
-      throw res;
+      throw response;
     }
   } catch (error) {
     return error;
@@ -83,11 +100,14 @@ export const fetchOneSpotThunk = (spotId) => async (dispatch) => {
 };
 
 export const updateSpotThunk = (spotId, updatedSpot) => async (dispatch) => {
-  let { country, address, city, state, description, name, price } = updatedSpot;
-  price = 711;
+  //console.log("WE DO GO INSIDE THUNK ----::");
+  let { country, address, city, state, description, name, price, previewImage } = updatedSpot;
+  price = parseInt(price)
+  //console.log("ummmmmmmm -- ",country, address, city, state, description, name, price, previewImage);
+  let lat = 3, lng = 3;
   const response = await csrfFetch(`/api/spots/${spotId}`, {
     method: "PUT",
-    body: JSON.stringify({ country, address, city, state, description, name, price })
+    body: JSON.stringify({ country, address, city, state, lat, lng, description, name, price, previewImage })
   });
 
   const data = await response.json();
@@ -95,12 +115,32 @@ export const updateSpotThunk = (spotId, updatedSpot) => async (dispatch) => {
   return data;
 };
 
+export const getCurrentSpotsThunk = () => async (dispatch) => {
+  const response = await csrfFetch("/api/spots/current");
+  // console.log("FROM BACKEND GETALLSPOTS::: ", response);
+  const data = await response.json();
+  dispatch(getCurrentSpotsAction(data));//data.Spots)); // data));
+  return response;
+};
+
+export const deleteSpotThunk = (spotId) => async (dispatch) => {
+  const response = await csrfFetch(`api/spots/${spotId}`, {
+    method: "DELETE"
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(deleteSpotAction(spotId));
+    return data;
+  }
+}
+
 /**** REDUCER ****/
 
 const initialState = { allSpots: [], byId: {} };
 
 const spotReducer = (state = initialState, action) => {
-  let newState, newById = {};
+  let newState, newById = {}, newAllSpots = [];
 
   switch (action.type) {
 
@@ -116,72 +156,61 @@ const spotReducer = (state = initialState, action) => {
       newState.byId = newById;
       return newState;
 
-    // newState = { ...state, allSpots: action.payload };
-    // console.log("inside action.payload: ", action.payload);
-
-    // if (action.payload.singleSpot) {
-    //   const singleSpot = action.payload.singleSpot;
-    //   newById[singleSpot.id] = singleSpot;
-    // } else {
-    //   newById = { ...newState.byId };
-    //   for (let spot of action.payload) {
-    //     newById[spot.id] = spot;
-    //   }
-    // }
-    // newState.byId = newById;
-
-    // console.log("inside allSpots: ", newState.allSpots);
-    // console.log("inside byId: ", newState.byId);
-
-    // return newState;
-
     case GET_A_SPOT:
       //console.log("actionnnnn ----", action.payload);
       newState = { ...state };
       newState.allSpots = [action.payload];
-      //newById[spot.id] = spot
 
       newState.byId[action.payload.id] = action.payload;
       return newState;
 
     case POST_A_SPOT:
-      //console.log("BEFORE: ---", action.payload);
+      //console.log("action: ---", action.payload);
       newState = { ...state };
-
       newState.allSpots = [...newState.allSpots, action.payload];
-      // newState.allSpots,action.payload;
 
       newState.byId = { ...newState.byId, [action.payload.id]: action.payload };
-      // newState.allSpots = [
-      //   ...newState.allSpots,
-      //   action.payload
-      // ];
-      //newState.byId = [ ...newState.byId, action.payload];
-      //for(let spot of action.payload.id){
-      //  newById[spot.id] = spot;
-      //}
-      //action.payload.id = action.payload;
-      //newById = { ...newState.byId, [action.payload.id]: action.payload };
-      //newState.byId = { ...newState.byId, [action.payload.id]: action.payload };
 
-      //, [action.payload.id]: action.payload };
-      //newState.byId = newById;
-
-      //console.log("inside allSpots: ", newState.allSpots);
-      //console.log("inside byId: ", newState.byId);
       return newState;
 
     case UPDATE_A_SPOT:
-      newState = { ...state, allSpots: [] };
-      //console.log("PUT_A_SPOT: "action.payload);
-      for (let spot of newState.allSpots) {
-        if (spot.id === action.payload.id) {
-          newState.allSpots.push(action.payload);
-        } else {
-          newState.allSpots.push(spot);
+      //console.log("action ---: "action.payload);
+      newState = { ...state };
+      newState.allSpots = [...newState.allSpots, action.payload];
+
+      newState.byId = { ...newState.byId, [action.payload.id]: action.payload };
+      //newState.byId[action.payload.id] = action.payload;
+      return newState;
+
+    case GET_CURRENT_SPOTS:
+      newState = { ...state };
+      newState.allSpots = action.payload.Spots;
+
+      for (let spot of action.payload.Spots) {
+        newById[spot.id] = spot
+      }
+
+      newState.byId = newById;
+
+      return newState;
+
+    case DELETE_A_SPOT:
+      newState = { ...state };
+
+      for(let spot of action.payload.Spots){
+        if(spot.id !== action.payload){
+          newAllSpots.push(spot);
         }
       }
-      newState.byId = { ...newState.byId, [action.payload.id]: action.payload };
+
+      newState.allSpots = newAllSpots;
+
+      // newState.allSpots = newById;
+      // for(let spot of action.payload.Spots){
+      //   newById[spot.id] = spot
+      // }
+      // newState.byId = newById;
+      delete newState.byId[action.payload];
 
       return newState;
 

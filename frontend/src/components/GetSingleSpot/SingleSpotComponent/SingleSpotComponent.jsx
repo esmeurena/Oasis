@@ -1,5 +1,4 @@
 import './SingleSpotComponent.css';
-import { Link } from 'react-router-dom';
 
 const SingleSpotComponent = ({ spot }) => {
     return (
@@ -9,9 +8,6 @@ const SingleSpotComponent = ({ spot }) => {
                 <div className="location-review">
                     <p className="cute-font-text">{spot.city}, {spot.state}, {spot.country}</p>
                     <p className="cute-font-text">{spot.aveReview}</p>
-                </div>
-                <div className="update-button">
-                    <Link to={`/spots/${spot.id}/update`}>Update Spot</Link>
                 </div>
                 <div className="all-images">
                     <div className="main-image">
@@ -24,7 +20,7 @@ const SingleSpotComponent = ({ spot }) => {
                         <img src={spot.previewImage} className="smaller-image" />
                     </div>
                 </div>
-                {<p>Hosted by {spot.userId.name}, {spot.userId.lastName}</p>}
+                {<p>Hosted by {spot.Owner.firstName}, {spot.Owner.lastName}</p>}
                 <p className="cute-font-text">{spot.description}</p>
                 <div className="reserve-box">
                     <p className="cute-font-text">{spot.price} / night</p>

@@ -17,6 +17,17 @@ function CreateNewSpot() {
   const [price, setPrice] = useState("");
   const [previewImage, setPreviewImage] = useState("");
 
+  const stopWastingTime = () => {
+    setCountry("United States");
+    setAddress("1234 first st");
+    setCity("San Diego");
+    setState("California");
+    setDescription("This is a beautiful little getaway in the north of San Diego.");
+    setName("San Diego Getaway");
+    setPrice(200);
+    setPreviewImage("https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/560px-PNG_transparency_demonstration_1.png");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const spotData = { country, address, city, state, description, name, price, previewImage };
@@ -29,6 +40,9 @@ function CreateNewSpot() {
   return (
     <div>
       <h1>Create a New Spot</h1>
+    
+    <button onClick={stopWastingTime}>Stop Wasting Time</button>
+
       <form onSubmit={handleSubmit}>
         <label className="spot-input">
           <p className="spot-title-input">Country</p>

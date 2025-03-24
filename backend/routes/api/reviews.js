@@ -115,8 +115,8 @@ router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
             stars
         });
 
-        newReview.dataValues.createdAt = formatDate(newReview.createdAt);
-        newReview.dataValues.updatedAt = formatDate(newReview.updatedAt);
+        // newReview.dataValues.createdAt = formatDate(newReview.createdAt);
+        // newReview.dataValues.updatedAt = formatDate(newReview.updatedAt);
 
         return res.status(201).json(newReview);
     } catch (error) {

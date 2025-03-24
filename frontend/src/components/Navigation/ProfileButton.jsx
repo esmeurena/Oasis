@@ -54,7 +54,7 @@ function ProfileButton({ user }) {
               <p>{user.username}</p>
               <p>{user.firstName} {user.lastName}</p>
               <p>{user.email}</p>
-                <Link to="/spots/newSpot" className="cute-font-button">Create a New Spot</Link>
+                {/* <Link to="/spots/newSpot" className="cute-font-button">Create a New Spot</Link> */}
             </div>
             <div>
               <Link to="/spots/spotManagement" className="cute-font-button">Manage Spots</Link>

@@ -17,11 +17,14 @@
 
 .tooltip {
     display: none;
-    position: fixed;
+    position: absolute;
     /* top: 1px; */
-    background-color: darkgray;
-    color: white;
+    top: 0%;
+    background-color: rgb(254, 248, 249);
+    color: rgb(88, 88, 88);
     border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
 }
 
 .individual-spot-list:hover .tooltip {
@@ -58,4 +61,8 @@
     padding: 10px;
     border: none;
     cursor: pointer;
+}
+
+.spot-container {
+    text-decoration: none;
 }

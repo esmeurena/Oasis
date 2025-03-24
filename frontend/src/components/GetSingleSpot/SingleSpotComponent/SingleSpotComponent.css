@@ -57,8 +57,7 @@
     background-color: rgb(254, 248, 249);
     padding: 20px;
     width: 200px;
-    position: fixed;
-    top: 80%;
+    position: absolute;
     right: 0;
 }
 

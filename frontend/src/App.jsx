@@ -35,10 +35,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <GetAllSpots />,
       },
-      {
-        path: '/spots',
-        element: <GetAllSpots />,
-      },
+      // {
+      //   path: '/spots',
+      //   element: <GetAllSpots />,
+      // },
       {
         path: '/spots/:spotId',
         element: <GetSingleSpot />,

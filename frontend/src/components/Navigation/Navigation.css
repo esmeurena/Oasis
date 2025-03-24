@@ -2,7 +2,6 @@
     color: rgb(88, 88, 88);
     padding: 20px;
     text-decoration: none;
-
     font-family: "Outfit", sans-serif;
     font-optical-sizing: auto;
     font-weight: normal;
@@ -10,12 +9,17 @@
     font-size: 17px;
 }
 
+.nav-link:hover {
+    background-color: lightgray;
+  }
+
 .navigation {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 15px;
     margin-bottom: 15px;
+    width: 100%;
 }
 
 .oasis-logo {
@@ -27,4 +31,11 @@
     justify-content: space-between;
     align-items: center;
     background-color: rgb(254, 248, 249);
+}
+.center-options {
+    display: flex;
+    
+    justify-content: center;
+    flex-grow: 1;
+    margin-top: 10px;
 }

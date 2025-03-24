@@ -124,24 +124,24 @@ router.post('/:spotId/reviews', requireAuth, async (req, res, next) => {
     }
 });
 
-//  Add an Image to a Review
-router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
-    try {
-        const { reviewId } = req.params;
-        const { url } = req.body;
-        const userId = req.user.id;
+// //  Add an Image to a Review
+// router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
+//     try {
+//         const { reviewId } = req.params;
+//         const { url } = req.body;
+//         const userId = req.user.id;
 
-        const review = await Review.findByPk(reviewId);
+//         const review = await Review.findByPk(reviewId);
 
-        const imageCount = await ReviewImage.count({ where: { reviewId } });
+//         const imageCount = await ReviewImage.count({ where: { reviewId } });
     
-        const newImage = await ReviewImage.create({ reviewId, url });
+//         const newImage = await ReviewImage.create({ reviewId, url });
 
-        return res.json(newImage);
-    } catch (error) {
-        next(error);
-    }
-});
+//         return res.json(newImage);
+//     } catch (error) {
+//         next(error);
+//     }
+// });
 
 router.put('/:reviewId', requireAuth, async (req, res, next) => {
     try {

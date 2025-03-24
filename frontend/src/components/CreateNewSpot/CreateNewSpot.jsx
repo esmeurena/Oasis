@@ -45,7 +45,7 @@ function CreateNewSpot() {
 
       <form onSubmit={handleSubmit}>
         <div>
-          <h2>Where's your place located?</h2>
+          <h2>Wheres your place located?</h2>
           <p>Guests will only get your exact address once they booked a reservation.</p>
           <label className="spot-input">
             <p className="spot-title-input">Country</p>
@@ -106,7 +106,7 @@ function CreateNewSpot() {
         </div>
         <div>
           <h2>Create a title for your spot</h2>
-          <p>Catch guests' attention with a spot title that highlights what makes your place special.</p>
+          <p>Catch guests attention with a spot title that highlights what makes your place special.</p>
           <label className="spot-input">
             <p className="spot-title-input">Name for Spot</p>
             <input

@@ -19,7 +19,7 @@ function UpdateSpot() {
     const [state, setState] = useState("");
     const [description, setDescription] = useState("");
     const [name, setName] = useState("");
-    const [price, setPrice] = useState("");
+    const [price, setPrice] = useState(0);
     const [previewImage, setPreviewImage] = useState("");
 
     // useEffect(() => {

@@ -67,10 +67,10 @@ export const createSpotThunk = (userSpotInput) => async (dispatch) => {
     method: "POST",
     body: JSON.stringify({ address, city, state, country, lat, lng, name, description, price, previewImage })
   });
-  console.log("response ---", response);
+  //console.log("response ---", response);
 
   const data = await response.json();
-  console.log("data ---", data);
+  //console.log("data ---", data);
   dispatch(createSpotAction(data));//try data.Spots
   //console.log("SHOULD HAVE CHANGES", data);
   //dispatch(getSpotsAction([data]));
@@ -129,9 +129,9 @@ export const deleteSpotThunk = (spotId) => async (dispatch) => {
   });
 
   if (response.ok) {
-    const data = await response.json();
+    //const data = await response.json();
     dispatch(deleteSpotAction(spotId));
-    return data;
+    //return data;
   }
 }
 

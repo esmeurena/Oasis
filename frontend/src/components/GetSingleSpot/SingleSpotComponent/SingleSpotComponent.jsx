@@ -1,15 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './SingleSpotComponent.css';
-import { getAllReviewsThunk } from '../../../store/reviews';
+import { useNavigate } from 'react-router-dom';
+import { deleteReviewThunk } from '../../../store/reviews';
+
+import { getAllReviewsThunk, postReviewThunk } from '../../../store/reviews';
 
 const SingleSpotComponent = ({ spot }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const reviews = useSelector((state) => state.reviews.allReviews);
-    //console.log("SINGLESPOT - reviews", reviews);
-    //const reviewDatas = useSelector((state) => state.reviews.reviewsData);
-    //console.log("SINGLESPOT - reviewsDATA", reviewDatas);
+    const currentUser = useSelector(state => state.session.user);
+
     const reviewArray = reviews.reviews || [];
+    const [review, setReview] = useState("");
+    const [stars, setStars] = useState(0);//("");
+
+    const [addReviewModal, setAddReviewModal] = useState(false);
+    // const [reviewDeleting, setReviewDeleting] = useState(null);
 
     useEffect(() => {
 
@@ -19,6 +28,42 @@ const SingleSpotComponent = ({ spot }) => {
 
     }, [dispatch, spot]);
 
+    const postReviewForm = () => {
+        if (currentUser) {
+            for (let review of reviewArray) {
+                if (review.User.id === currentUser.id) {
+                    return null;//break;
+                }
+            }
+            setAddReviewModal(true);
+        }
+    };
+
+    const addReviewToReviews = async (e) => {
+        e.preventDefault();
+
+        const reviewData = { review, stars };
+        await dispatch(postReviewThunk(spot.id, reviewData));//const spotWithNewReview =
+        //console.log("SingleSPOT- reviewData ---", reviewData);
+        //console.log("SingleSPOT- newwww ---", spotWithNewReview);
+        
+        setAddReviewModal(false);
+        dispatch(getAllReviewsThunk(spot.id));//fetchOneSpotThunk(spot.id)));
+
+        navigate(`/spots/${spot.id}`);//spotWithNewReview.spotId}`);
+
+
+    };
+
+    const deleteButtonClick = (review) => {
+        // setReviewDeleting(review);
+        dispatch(deleteReviewThunk(review.id));
+        dispatch(getAllReviewsThunk(spot.id));
+    };
+
+    // const deleteReviewButton = async () => {
+    //     await dispatch(deleteReviewThunk(reviewDeleting.id, spot.id));
+    // };
 
     return (
         <div>
@@ -69,24 +114,76 @@ const SingleSpotComponent = ({ spot }) => {
                     {reviewArray.length === 0 ? (
                         <p>Be the first to post a review!</p>
                     ) : (
-                        reviewArray.map((review, idx) => (
-                            <div key={`${idx}-${review.id}`} className="review-card">
-                                <div className="review-align">
-                                    <p>{review.User.firstName}</p>
-                                    <div>
-                                        {/* {review.stars} */}
-                                        ★ {parseFloat(review.stars).toFixed(1)}
+                        reviewArray.map((review, idx) => {
+                            let deleteButton = null;
+                            if(currentUser && review.User.id === currentUser.id){
+                                deleteButton = (
+                                    <button onClick={() => deleteButtonClick(review)}>Delete</button>
+                                );
+                            }
+                            return (
+                                <div key={`${idx}-${review.id}`} className="review-card">
+                                    <div className="review-align">
+                                        <p>{review.User.firstName}</p>
+                                        <div>★ {parseFloat(review.stars).toFixed(1)}</div>
                                     </div>
+                                    <p className="cute-font">{review.review}</p>
+                                    <p className="review-date">
+                                        {new Date(review.createdAt).toLocaleString('en-US', {
+                                            month: 'long', year: 'numeric',
+                                        })}
+                                    </p>
+                                    {deleteButton}
                                 </div>
-                                <p className="cute-font">{review.review}</p>
-                                {/* <p>{review.createdAt}</p> <p className="review-date">{new Date(review.createdAt).toLocaleString('en-US')}</p>*/}
-                                <p className="review-date">{new Date(review.createdAt).toLocaleString('en-US', {
-                                    month: 'long', year: 'numeric',
-                                })}</p>
-                            </div>
-                        ))
+                            );
+                        })
                     )}
                 </div>
+
+                <div>
+                    {(() => {
+                        if(currentUser){
+                            for(let review of reviewArray){
+                                if(review.User.id === currentUser.id){
+                                    return null;//break;
+                                }
+                            }
+                            return <button onClick={postReviewForm}>Post Your Review</button>;
+
+                        }
+                    })()}
+                </div>
+
+                <div>
+                    {addReviewModal && (
+                        <div>
+                            <h3>How was your stay?</h3>
+                            <textarea
+                                placeholder="Leave your review here..."
+                                value={review}
+                                onChange={(e) => setReview(e.target.value)}
+                            />
+                            <div>
+                                <label>Stars</label>
+                                <input
+                                    type="number"
+                                    value={stars}
+                                    onChange={(e) => setStars(e.target.value)}
+                                    // min={1} max={5}
+                                />
+                            </div>
+                            {/* {(() => {
+                                if (review.length > 10 && (stars > 0 || stars < 5)) {
+                                    <button>Submit Your Review</button>
+                                }
+                            })()} */}
+                            <button onClick={addReviewToReviews}
+                            disabled={review.length < 10 || stars < 1 || stars > 5}>
+                                Submit Your Review</button>
+                        </div>
+                    )}
+                </div>
+
                 <div className="reserve-box">
                     <p className="cute-font-text">{spot.price} / night</p>
                     <button className="cute-font-text" onClick={() => alert('Feature coming soon!!')}>Reserve!!</button>

@@ -11,7 +11,7 @@ const CurrentSpotsComponent = ({ spot, deleteSpot }) => {
 
     return (
         <div>
-            <div className="spot-container">
+            <Link to={`/spots/${spot.id}`} className="spot-container">
                 <div className="individual-spot-list">
                     {spot.previewImage && (
                         <img src={spot.previewImage} className="spot-image" />
@@ -65,7 +65,7 @@ const CurrentSpotsComponent = ({ spot, deleteSpot }) => {
                     </div>
 
                 </div>
-            </div>
+            </Link>
         </div>
     );
 }

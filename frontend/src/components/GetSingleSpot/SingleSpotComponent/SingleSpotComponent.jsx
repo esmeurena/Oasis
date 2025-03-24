@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './SingleSpotComponent.css';
 import { useNavigate } from 'react-router-dom';
-import { deleteReviewThunk } from '../../../store/reviews';
-
-import { getAllReviewsThunk, postReviewThunk } from '../../../store/reviews';
+import { deleteReviewThunk, getAllReviewsThunk, postReviewThunk } from '../../../store/reviews';
+import CreateReviewModal from '../CreateReviewModal/CreateReviewModal';
 
 const SingleSpotComponent = ({ spot }) => {
     const dispatch = useDispatch();
@@ -14,8 +13,8 @@ const SingleSpotComponent = ({ spot }) => {
     const currentUser = useSelector(state => state.session.user);
 
     const reviewArray = reviews.reviews || [];
-    const [review, setReview] = useState("");
-    const [stars, setStars] = useState(0);//("");
+    // const [review, setReview] = useState("");
+    // const [stars, setStars] = useState(0);//("");
 
     const [addReviewModal, setAddReviewModal] = useState(false);
     // const [reviewDeleting, setReviewDeleting] = useState(null);
@@ -39,8 +38,7 @@ const SingleSpotComponent = ({ spot }) => {
         }
     };
 
-    const addReviewToReviews = async (e) => {
-        e.preventDefault();
+    const addReviewToReviews = async (review, stars) => {
 
         const reviewData = { review, stars };
         await dispatch(postReviewThunk(spot.id, reviewData));//const spotWithNewReview =
@@ -112,7 +110,13 @@ const SingleSpotComponent = ({ spot }) => {
                 <h2 className="cute-font">Reviews</h2>
                 <div>
                     {reviewArray.length === 0 ? (
-                        <p>Be the first to post a review!</p>
+                        currentUser && currentUser.id !== spot.Owner.id ? (
+                            <p>Be the first to post a review!</p>
+                        ) : currentUser && currentUser.id === spot.Owner.id ? (
+                            <p>You can't review your own spot</p>
+                        ) : (
+                            <p>No reviews. Log in to post the first one!</p>
+                        )
                     ) : (
                         reviewArray.map((review, idx) => {
                             let deleteButton = null;
@@ -153,41 +157,11 @@ const SingleSpotComponent = ({ spot }) => {
                         }
                     })()}
                 </div>
-
-                <div>
-                    {addReviewModal && (
-                        <div>
-                            <h3>How was your stay?</h3>
-                            <textarea
-                                placeholder="Leave your review here..."
-                                value={review}
-                                onChange={(e) => setReview(e.target.value)}
-                            />
-                            <div>
-                                <label>Stars</label>
-                                <input
-                                    type="number"
-                                    value={stars}
-                                    onChange={(e) => setStars(e.target.value)}
-                                    // min={1} max={5}
-                                />
-                            </div>
-                            {/* {(() => {
-                                if (review.length > 10 && (stars > 0 || stars < 5)) {
-                                    <button>Submit Your Review</button>
-                                }
-                            })()} */}
-                            <button onClick={addReviewToReviews}
-                            disabled={review.length < 10 || stars < 1 || stars > 5}>
-                                Submit Your Review</button>
-                        </div>
-                    )}
-                </div>
-
-                <div className="reserve-box">
-                    <p className="cute-font-text">{spot.price} / night</p>
-                    <button className="cute-font-text" onClick={() => alert('Feature coming soon!!')}>Reserve!!</button>
-                </div>
+                <CreateReviewModal
+                    displayPopup={addReviewModal}
+                    closePopup={() => setAddReviewModal(false)}
+                    addReviewButton={addReviewToReviews}
+                />
             </div>
         </div>
     );

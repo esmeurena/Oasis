@@ -21,10 +21,10 @@ function UpdateSpot() {
     const [name, setName] = useState("");
     const [price, setPrice] = useState(0);
     const [previewImage, setPreviewImage] = useState("");
-    const [image1, setImage1] = useState("");
-    const [image2, setImage2] = useState("");
-    const [image3, setImage3] = useState("");
-    const [image4, setImage4] = useState("");
+    // const [image1, setImage1] = useState("");
+    // const [image2, setImage2] = useState("");
+    // const [image3, setImage3] = useState("");
+    // const [image4, setImage4] = useState("");
 
     // useEffect(() => {
     //     console.log("useeffect1");
@@ -177,42 +177,7 @@ function UpdateSpot() {
                             required
                         />
                     </label>
-                    <label className="spot-input">
-                        {/* <p className="spot-title-input">PreviewImage</p> */}
-                        <input
-                            type="text"
-                            placeholder="Image URL"
-                            value={image1}
-                            onChange={(e) => setPreviewImage(e.target.value)}
-                        />
-                    </label>
-                    <label className="spot-input">
-                        {/* <p className="spot-title-input">PreviewImage</p> */}
-                        <input
-                            type="text"
-                            placeholder="Image URL"
-                            value={image2}
-                            onChange={(e) => setPreviewImage(e.target.value)}
-                        />
-                    </label>
-                    <label className="spot-input">
-                        {/* <p className="spot-title-input">PreviewImage</p> */}
-                        <input
-                            type="text"
-                            placeholder="Image URL"
-                            value={image3}
-                            onChange={(e) => setPreviewImage(e.target.value)}
-                        />
-                    </label>
-                    <label className="spot-input">
-                        {/* <p className="spot-title-input">PreviewImage</p> */}
-                        <input
-                            type="text"
-                            placeholder="Image URL"
-                            value={image4}
-                            onChange={(e) => setPreviewImage(e.target.value)}
-                        />
-                    </label>
+                    
                 </div>
 
                 <button type="submit">Update Spot</button>

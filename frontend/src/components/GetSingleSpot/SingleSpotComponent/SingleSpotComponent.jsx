@@ -113,7 +113,7 @@ const SingleSpotComponent = ({ spot }) => {
                         currentUser && currentUser.id !== spot.Owner.id ? (
                             <p>Be the first to post a review!</p>
                         ) : currentUser && currentUser.id === spot.Owner.id ? (
-                            <p>You can't review your own spot</p>
+                            <p>You cant review your own spot</p>
                         ) : (
                             <p>No reviews. Log in to post the first one!</p>
                         )

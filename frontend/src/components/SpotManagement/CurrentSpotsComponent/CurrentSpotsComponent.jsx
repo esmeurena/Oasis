@@ -5,7 +5,7 @@ import './CurrentSpotsComponent.css';
 
 const CurrentSpotsComponent = ({ spot, deleteSpot }) => {
     const [confirmDeletePopup, setConfirmDeletePopup] = useState(false);
-    console.log("Wwhats in this ----", confirmDeletePopup);
+    //console.log("Wwhats in this ----", confirmDeletePopup);
     const openDeletePopup = () => setConfirmDeletePopup(true);
     const closeDeletePopup = () => setConfirmDeletePopup(false);
 

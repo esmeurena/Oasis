@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 // import { fetchOneSpotThunk } from '../../store/spots';
-import { updateSpotThunk } from '../../store/spots';
+import { fetchOneSpotThunk, updateSpotThunk } from '../../store/spots';
 import './UpdateSpot.css';
 
 function UpdateSpot() {
@@ -21,16 +21,16 @@ function UpdateSpot() {
     const [name, setName] = useState("");
     const [price, setPrice] = useState(0);
     const [previewImage, setPreviewImage] = useState("");
-    // const [image1, setImage1] = useState("");
-    // const [image2, setImage2] = useState("");
-    // const [image3, setImage3] = useState("");
-    // const [image4, setImage4] = useState("");
+    const [image1, setImage1] = useState("");
+    const [image2, setImage2] = useState("");
+    const [image3, setImage3] = useState("");
+    const [image4, setImage4] = useState("");
 
-    // useEffect(() => {
-    //     console.log("useeffect1");
-    //     dispatch(fetchOneSpotThunk(spotId));
+    useEffect(() => {
+        console.log("useeffect1");
+        dispatch(fetchOneSpotThunk(spotId));
 
-    // }, [dispatch, spotId]);
+    }, [dispatch, spotId]);
 
     // const [isLoaded, setIsLoaded] = useState(false);
 
@@ -69,7 +69,7 @@ function UpdateSpot() {
         //console.log("spotID, updatedSPOT :::----", spotId, updatedSpot);
         const updatedSpot = await dispatch(updateSpotThunk(spotId, updatedSpotData));
         //console.log("updatedspot ---",updatedSpot.spot.id);
-        navigate(`/spots/${updatedSpot.spot.id}`);
+        navigate(`/spots/${updatedSpot.id}`);
     };
 
     return (
@@ -177,9 +177,43 @@ function UpdateSpot() {
                             required
                         />
                     </label>
-                    
+                    <label className="spot-input">
+                        {/* <p className="spot-title-input">PreviewImage</p> */}
+                        <input
+                            type="text"
+                            placeholder="Image URL"
+                            value={image1}
+                            onChange={(e) => setImage1(e.target.value)}
+                        />
+                    </label>
+                    <label className="spot-input">
+                        {/* <p className="spot-title-input">PreviewImage</p> */}
+                        <input
+                            type="text"
+                            placeholder="Image URL"
+                            value={image2}
+                            onChange={(e) => setImage2(e.target.value)}
+                        />
+                    </label>
+                    <label className="spot-input">
+                        {/* <p className="spot-title-input">PreviewImage</p> */}
+                        <input
+                            type="text"
+                            placeholder="Image URL"
+                            value={image3}
+                            onChange={(e) => setImage3(e.target.value)}
+                        />
+                    </label>
+                    <label className="spot-input">
+                        {/* <p className="spot-title-input">PreviewImage</p> */}
+                        <input
+                            type="text"
+                            placeholder="Image URL"
+                            value={image4}
+                            onChange={(e) => setImage4(e.target.value)}
+                        />
+                    </label>
                 </div>
-
                 <button type="submit">Update Spot</button>
             </form>
         </div >

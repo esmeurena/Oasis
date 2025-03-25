@@ -16,21 +16,21 @@ function CreateNewSpot() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [previewImage, setPreviewImage] = useState("");
-  // const [image1, setImage1] = useState("");
-  // const [image2, setImage2] = useState("");
-  // const [image3, setImage3] = useState("");
-  // const [image4, setImage4] = useState("");
+  const [image1, setImage1] = useState("");
+  const [image2, setImage2] = useState("");
+  const [image3, setImage3] = useState("");
+  const [image4, setImage4] = useState("");
 
-  // const stopWastingTime = () => {
-  //   setCountry("United States");
-  //   setAddress("1234 first st");
-  //   setCity("San Diego");
-  //   setState("California");
-  //   setDescription("This is a beautiful little getaway in the north of San Diego.");
-  //   setName("San Diego Getaway");
-  //   setPrice(200);
-  //   setPreviewImage("https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/560px-PNG_transparency_demonstration_1.png");
-  // };
+  const stopWastingTime = () => {
+    setCountry("United States");
+    setAddress("1234 first st");
+    setCity("San Diego");
+    setState("California");
+    setDescription("This is a beautiful little getaway in the north of San Diego.");
+    setName("San Diego Getaway");
+    setPrice(200);
+    setPreviewImage("https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/560px-PNG_transparency_demonstration_1.png");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +45,7 @@ function CreateNewSpot() {
     <div>
       <h1>Create a New Spot</h1>
 
-      {/* <button onClick={stopWastingTime}>Stop Wasting Time</button> */}
+      <button onClick={stopWastingTime}>Stop Wasting Time</button>
 
       <form onSubmit={handleSubmit}>
         <div>
@@ -147,6 +147,42 @@ function CreateNewSpot() {
               value={previewImage}
               onChange={(e) => setPreviewImage(e.target.value)}
               required
+            />
+          </label>
+          <label className="spot-input">
+            {/* <p className="spot-title-input">PreviewImage</p> */}
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={image1}
+              onChange={(e) => setImage1(e.target.value)}
+            />
+          </label>
+          <label className="spot-input">
+            {/* <p className="spot-title-input">PreviewImage</p> */}
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={image2}
+              onChange={(e) => setImage2(e.target.value)}
+            />
+          </label>
+          <label className="spot-input">
+            {/* <p className="spot-title-input">PreviewImage</p> */}
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={image3}
+              onChange={(e) => setImage3(e.target.value)}
+            />
+          </label>
+          <label className="spot-input">
+            {/* <p className="spot-title-input">PreviewImage</p> */}
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={image4}
+              onChange={(e) => setImage4(e.target.value)}
             />
           </label>
   

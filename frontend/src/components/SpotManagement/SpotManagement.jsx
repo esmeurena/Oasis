@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'; //React,
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentSpotsThunk } from '../../store/spots';
 import CurrentSpotsComponent from './CurrentSpotsComponent';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { deleteSpotThunk } from '../../store/spots';
 import './SpotManagement.css';
 
 const SpotManagement = () => {
   const dispatch = useDispatch();
-//   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const currentSpotsArray = useSelector((state) => state.spots.allSpots);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -35,6 +35,9 @@ const SpotManagement = () => {
 
   const deleteTheSpot = async (spotId) => {
     await dispatch(deleteSpotThunk(spotId));
+
+    navigate('/');
+
   };
 
   if (!isLoaded) {

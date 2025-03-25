@@ -398,7 +398,10 @@ router.post('/', validateSpots, async (req, res, next) => {
     try {
         const userId = await req.user.id;
         const { address, city, state, country, lat, lng, name, description, price, previewImage } = req.body;
-
+        
+        const owner = await User.findByPk(userId, {
+            attributes: { exclude: ['username', 'email', 'hashedPassword', 'createdAt', 'updatedAt'] }
+        });
 
         const spot = await Spot.create({
             userId: userId, address, city, state, country, lat, lng, name,
@@ -436,7 +439,7 @@ router.post('/', validateSpots, async (req, res, next) => {
             numReviews: totalRev,
             aveReview: avgRev,
             previewImage: previewImage,
-            //Owner: spot.Owner,
+            Owner: owner,
         };
 
         //const spotWithNoUserId = newSpot.toJSON();
@@ -513,12 +516,53 @@ router.put('/:spotId', validateSpots, async (req, res, next) => {
 
         const { address, city, state, country, lat, lng, name, description, price, previewImage} = req.body;
 
-        const spotToUpdate = await Spot.findByPk(spotId);
-        if (spotToUpdate.userId !== userId) {
+        const spot = await Spot.findByPk(spotId,{
+            include: [{
+                model:User,
+                as:"Owner",
+                attributes: {exclude:['username','email','hashedPassword','createdAt','updatedAt']}
+            }]
+        });
+        if (spot.userId !== userId) {
             throw new Error("USER IS NOT OWNER");
         }
-        await spotToUpdate.update({ userId, address, city, state, country, lat, lng, name, description, price, previewImage });
-        return res.json({ spot: spotToUpdate });
+        await spot.update({ userId, address, city, state, country, lat, lng, name, description, price, previewImage });
+
+        const allReviews = await Review.findAll({ 
+            where: { 
+                spotId: spot.id 
+            }});
+
+        let avgRev = 0, totalRev = 0;
+        for(let review of allReviews){
+            avgRev += review.stars;
+            totalRev++;
+        }
+    
+        if(totalRev > 0){
+            avgRev = (avgRev / totalRev).toFixed(1);
+        }
+
+        const prettyDataSpot = {
+            id: spot.id,
+            userId: spot.userId,
+            address: spot.address,
+            city: spot.city,
+            state: spot.state,
+            country: spot.country,
+            lat: spot.lat,
+            lng: spot.lng,
+            name: spot.name,
+            description: spot.description,
+            price: spot.price,
+            createdAt: spot.createdAt,
+            updatedAt: spot.updatedAt,
+            numReviews: totalRev,
+            aveReview: avgRev,
+            previewImage: previewImage,
+            Owner: spot.Owner,
+        };
+        return res.json(prettyDataSpot);
     } catch (error) {
         next(error)
     }

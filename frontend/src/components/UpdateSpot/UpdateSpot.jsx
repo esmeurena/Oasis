@@ -27,7 +27,7 @@ function UpdateSpot() {
     const [image4, setImage4] = useState("");
 
     useEffect(() => {
-        console.log("useeffect1");
+        //console.log("useeffect1");
         dispatch(fetchOneSpotThunk(spotId));
 
     }, [dispatch, spotId]);

@@ -2,18 +2,17 @@ import { useEffect, useState } from 'react'; //React,
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentSpotsThunk } from '../../store/spots';
 import CurrentSpotsComponent from './CurrentSpotsComponent';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { deleteSpotThunk } from '../../store/spots';
 import './SpotManagement.css';
 
 const SpotManagement = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const currentSpotsArray = useSelector((state) => state.spots.allSpots);
   const [isLoaded, setIsLoaded] = useState(false);
-  console.log("current spots", currentSpotsArray);
+  //console.log("current spots", currentSpotsArray);
 
   useEffect(() => {
 
@@ -33,12 +32,12 @@ const SpotManagement = () => {
 //     navigate(`/spots/${spot.id}`);
 //   }
 
-  const deleteTheSpot = async (spotId) => {
-    await dispatch(deleteSpotThunk(spotId));
+  // const deleteTheSpot = async (spotId) => {
+  //   await dispatch(deleteSpotThunk(spotId));
 
-    navigate('/');
+  //   navigate('/');
 
-  };
+  // };
 
   if (!isLoaded) {
     return (
@@ -63,7 +62,7 @@ const SpotManagement = () => {
           {
             currentSpotsArray.map((spot, idx) => (
               <div key={`${idx}-${spot.id}`}>
-                <CurrentSpotsComponent spot={spot} deleteSpot={deleteTheSpot} />
+                <CurrentSpotsComponent spot={spot}/>
               </div>
             ))
           }

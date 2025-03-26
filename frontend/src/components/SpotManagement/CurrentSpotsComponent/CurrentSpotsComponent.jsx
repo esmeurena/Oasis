@@ -1,13 +1,38 @@
 // import React from 'react';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import './CurrentSpotsComponent.css';
+import { useNavigate } from 'react-router-dom';
+// import { deleteSpotThunk } from '../../../store/spots';
+import DeleteSpotModal from '../DeleteSpotModal';
 
-const CurrentSpotsComponent = ({ spot, deleteSpot }) => {
-    const [confirmDeletePopup, setConfirmDeletePopup] = useState(false);
-    //console.log("Wwhats in this ----", confirmDeletePopup);
-    const openDeletePopup = () => setConfirmDeletePopup(true);
-    const closeDeletePopup = () => setConfirmDeletePopup(false);
+const CurrentSpotsComponent = ({ spot }) => {
+    // const dispatch = useDispatch();
+
+    const currentUser = useSelector(state => state.session.user);
+    const [deleteSpotPopup, setDeleteSpotPopup] = useState(false);
+    //const openDeletePopup = () => setDeleteSpotPopup(true);
+    //const closeDeletePopup = () => setDeleteSpotPopup(false);
+    const navigate = useNavigate();
+
+    // const deleteTheSpot = async () => {
+    //     //e.preventDefault();
+    //     console.log("INSIDE DELETE A SPOT");
+    //     await dispatch(deleteSpotThunk(spot.id));
+
+    //     navigate('/');
+    // };
+
+    const verifyUserToDeleteSpot = () => {
+        if (currentUser && (spot.Owner.id === currentUser.id)) {
+            setDeleteSpotPopup(true);
+        }
+    }
+
+    const updateSpotLink = async () => {
+        navigate(`/spots/${spot.id}/update`);
+    }
 
     return (
         <div>
@@ -33,39 +58,26 @@ const CurrentSpotsComponent = ({ spot, deleteSpot }) => {
 
                     <p className="cute-font-text">{spot.description}</p>
                     <p className="cute-font-text">{spot.city}, {spot.state}</p>
-                    <div>
-                        <Link to={`/spots/${spot.id}/update`} >Update Spot</Link>
-                    </div>
-                    <div>
-                        <button onClick={openDeletePopup}>Delete Spot</button>
-                    </div>
-
-                    {confirmDeletePopup && (
-                        <div>
-                            <div>
-                                <h1>Confirm Delete</h1>
-                                <p>Are you sure you want to remove this spot?</p>
-                                <div>
-                                    <button className="red-button-yes"
-                                        onClick={() => {
-                                            deleteSpot(spot.id);
-                                            closeDeletePopup();
-                                        }}> Yes (Delete Spot)
-                                    </button>
-                                    <button className="gray-button-no" onClick={closeDeletePopup}>No (Keep Spot)</button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
                     <p className="cute-font-text">{spot.price} / night </p>
 
                     <div className="tooltip">
                         {spot.name}
                     </div>
-
                 </div>
             </Link>
+            <div>
+                <button className="cute-font-button"
+                    onClick={updateSpotLink}>Update Spot
+                </button>
+                <button className="cute-font-button" onClick={verifyUserToDeleteSpot}>Delete Spot</button>
+            </div>
+
+            <DeleteSpotModal
+                displayDeletePopup={deleteSpotPopup}
+                closePopup={() => setDeleteSpotPopup(false)}
+                //deleteSpotButton={deleteTheSpot}
+                spotId={spot.id}
+            />
         </div>
     );
 }

@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './SingleSpotComponent.css';
 import { useNavigate } from 'react-router-dom';
-import { deleteReviewThunk, getAllReviewsThunk, postReviewThunk } from '../../../store/reviews';
+import { getAllReviewsThunk, postReviewThunk } from '../../../store/reviews';
 import CreateReviewModal from '../CreateReviewModal/CreateReviewModal';
+import DeleteReviewModal from '../DeleteReviewModal';
 
 const SingleSpotComponent = ({ spot }) => {
     const dispatch = useDispatch();
@@ -11,6 +12,15 @@ const SingleSpotComponent = ({ spot }) => {
 
     const reviews = useSelector((state) => state.reviews.allReviews);
     const currentUser = useSelector(state => state.session.user);
+    const [deleteReviewPopup, setDeleteReviewPopup] = useState(false);
+    const [reviewId, setReviewId] = useState(0);
+
+    const verifyUserToDeleteReview = (review) => {
+        if (currentUser && (review.User.id === currentUser.id)) {
+            setReviewId(review.id);
+            setDeleteReviewPopup(true);
+        }
+    }
 
     const reviewArray = reviews.reviews || [];
     // const [review, setReview] = useState("");
@@ -44,7 +54,7 @@ const SingleSpotComponent = ({ spot }) => {
         await dispatch(postReviewThunk(spot.id, reviewData));//const spotWithNewReview =
         //console.log("SingleSPOT- reviewData ---", reviewData);
         //console.log("SingleSPOT- newwww ---", spotWithNewReview);
-        
+
         setAddReviewModal(false);
         dispatch(getAllReviewsThunk(spot.id));//fetchOneSpotThunk(spot.id)));
 
@@ -53,11 +63,11 @@ const SingleSpotComponent = ({ spot }) => {
 
     };
 
-    const deleteButtonClick = (review) => {
-        // setReviewDeleting(review);
-        dispatch(deleteReviewThunk(review.id));
-        dispatch(getAllReviewsThunk(spot.id));
-    };
+    // const deleteButtonClick = (review) => {
+    //     // setReviewDeleting(review);
+    //     dispatch(deleteReviewThunk(review.id));
+    //     dispatch(getAllReviewsThunk(spot.id));
+    // };
 
     // const deleteReviewButton = async () => {
     //     await dispatch(deleteReviewThunk(reviewDeleting.id, spot.id));
@@ -109,20 +119,32 @@ const SingleSpotComponent = ({ spot }) => {
                 <p className="cute-font-text">{spot.description}</p>
                 <h2 className="cute-font">Reviews</h2>
                 <div>
-                    {reviewArray.length === 0 ? (
-                        currentUser && currentUser.id !== spot.Owner.id ? (
-                            <p>Be the first to post a review!</p>
-                        ) : currentUser && currentUser.id === spot.Owner.id ? (
-                            <p>You cant review your own spot</p>
-                        ) : (
-                            <p>No reviews. Log in to post the first one!</p>
-                        )
-                    ) : (
+                    {(() => {
+                        if (currentUser) {
+                            for (let review of reviewArray) {
+                                if (review.User.id === currentUser.id) {
+                                    return null;
+                                }
+                            }
+                            if (currentUser.id !== spot.Owner.id) {
+                                if (reviewArray.length === 0) { <p>Be the first to post a review!</p> }
+                                return <button onClick={postReviewForm}>Post Your Review</button>;
+                            }
+                            else {
+                                return <p>You cant review your own spot</p>;
+                            }
+                        } else {
+                            return <p>Log in to post a review!</p>;
+                        }
+                    })()}
+                </div>
+                <div>
+                    {
                         reviewArray.map((review, idx) => {
                             let deleteButton = null;
-                            if(currentUser && review.User.id === currentUser.id){
+                            if (currentUser && review.User.id === currentUser.id) {
                                 deleteButton = (
-                                    <button onClick={() => deleteButtonClick(review)}>Delete</button>
+                                    <button onClick={() => verifyUserToDeleteReview(review)}>Delete Review</button>
                                 );
                             }
                             return (
@@ -141,26 +163,18 @@ const SingleSpotComponent = ({ spot }) => {
                                 </div>
                             );
                         })
-                    )}
-                </div>
-
-                <div>
-                    {(() => {
-                        if(currentUser){
-                            for(let review of reviewArray){
-                                if(review.User.id === currentUser.id){
-                                    return null;//break;
-                                }
-                            }
-                            return <button onClick={postReviewForm}>Post Your Review</button>;
-
-                        }
-                    })()}
+                    }
                 </div>
                 <CreateReviewModal
                     displayPopup={addReviewModal}
                     closePopup={() => setAddReviewModal(false)}
                     addReviewButton={addReviewToReviews}
+                />
+                <DeleteReviewModal
+                    displayDeletePopup={deleteReviewPopup}
+                    closePopup={() => setDeleteReviewPopup(false)}
+                    spotId={spot.id}
+                    reviewId={reviewId}
                 />
             </div>
         </div>

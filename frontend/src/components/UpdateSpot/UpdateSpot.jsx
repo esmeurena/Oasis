@@ -9,6 +9,7 @@ function UpdateSpot() {
     //console.log("we innnnnnn");
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const currentUser = useSelector(state => state.session.user);
 
     const { spotId } = useParams();
     const spot = useSelector((state) => state.spots.byId[spotId]);
@@ -67,9 +68,12 @@ function UpdateSpot() {
         //let newPrice = 122;
         const updatedSpotData = { country, address, city, state, description, name, price, previewImage };
         //console.log("spotID, updatedSPOT :::----", spotId, updatedSpot);
-        const updatedSpot = await dispatch(updateSpotThunk(spotId, updatedSpotData));
-        //console.log("updatedspot ---",updatedSpot.spot.id);
-        navigate(`/spots/${updatedSpot.id}`);
+        if (currentUser && (spot.Owner.id === currentUser.id)) {
+            const updatedSpot = await dispatch(updateSpotThunk(spotId, updatedSpotData));
+            navigate(`/spots/${updatedSpot.id}`);
+        }else{
+            alert("You are not the owner of this spot");
+        }
     };
 
     return (

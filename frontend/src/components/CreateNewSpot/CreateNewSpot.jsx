@@ -67,13 +67,13 @@ function CreateNewSpot() {
       delete displayValidation.description;
     }
 
-    if(!name || name.length > 50){
+    if(!name || name.length < 1 || name.length > 50){
       displayValidation.name = "Name is empty or must be between 1 and 50 characters";
     }else{
-      displayValidation.name;
+      delete displayValidation.name;
     }
 
-    if(!price || price <= 1){
+    if(!price || price < 1){
       displayValidation.price = "Price is empty or must be more than 0";
     }else{
       delete displayValidation.price;

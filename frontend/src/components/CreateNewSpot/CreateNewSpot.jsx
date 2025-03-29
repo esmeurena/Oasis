@@ -21,16 +21,16 @@ function CreateNewSpot() {
   const [image3, setImage3] = useState("");
   const [image4, setImage4] = useState("");
 
-  const stopWastingTime = () => {
-    setCountry("United States");
-    setAddress("1234 first st");
-    setCity("San Diego");
-    setState("California");
-    setDescription("This is a beautiful little getaway in the north of San Diego.");
-    setName("San Diego Getaway");
-    setPrice(200);
-    setPreviewImage("https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/560px-PNG_transparency_demonstration_1.png");
-  };
+  // const stopWastingTime = () => {
+  //   setCountry("United States");
+  //   setAddress("1234 first st");
+  //   setCity("San Diego");
+  //   setState("California");
+  //   setDescription("This is a beautiful little getaway in the north of San Diego.");
+  //   setName("San Diego Getaway");
+  //   setPrice(200);
+  //   setPreviewImage("https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/560px-PNG_transparency_demonstration_1.png");
+  // };
 
   const [validate, setValidate] = useState({});
 
@@ -127,11 +127,6 @@ function CreateNewSpot() {
               type="text"
               placeholder="Country"
               value={country}
-              // onChange={(e) => { validations(e.target.value, "country");
-              //   if(!validate.country){
-              //     setCountry(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setCountry(value);
@@ -152,11 +147,6 @@ function CreateNewSpot() {
               type="text"
               placeholder="Street Address"
               value={address}
-              // onChange={(e) => { validations(e.target.value, "address");
-              //   if(!validate.address){
-              //     setAddress(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setAddress(value);
@@ -177,11 +167,6 @@ function CreateNewSpot() {
               type="text"
               placeholder="City"
               value={city}
-              // onChange={(e) => { validations(e.target.value, "city");
-              //   if(!validate.city){
-              //     setCity(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setCity(value);
@@ -202,11 +187,6 @@ function CreateNewSpot() {
               type="text"
               placeholder="State"
               value={state}
-              // onChange={(e) => { validations(e.target.value, "state");
-              //   if(!validate.state){
-              //     setState(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setState(value);
@@ -229,11 +209,6 @@ function CreateNewSpot() {
             <textarea
               placeholder="Please write at least 30 characters"
               value={description}
-              // onChange={(e) => { validations(e.target.value, "description");
-              //   if(!validate.description){
-              //     setDescription(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setDescription(value);
@@ -257,11 +232,6 @@ function CreateNewSpot() {
               type="text"
               placeholder="Name of your spot"
               value={name}
-              // onChange={(e) => { validations(e.target.value, "name");
-              //   if(!validate.name){
-              //     setName(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setName(value);
@@ -285,11 +255,6 @@ function CreateNewSpot() {
               type="number"
               placeholder="Price per night (USD)"
               value={price}
-              // onChange={(e) => { validations(e.target.value, "price");
-              //   if(!validate.price){
-              //     setPrice(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setPrice(value);
@@ -313,11 +278,6 @@ function CreateNewSpot() {
               type="text"
               placeholder="Preview Image URL"
               value={previewImage}
-              // onChange={(e) => { validations(e.target.value, "previewImage");
-              //   if(!validate.previewImage){
-              //     setPreviewImage(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setPreviewImage(value);
@@ -337,11 +297,6 @@ function CreateNewSpot() {
               type="text"
               placeholder="Image URL"
               value={image1}
-              // onChange={(e) => { validations(e.target.value, "image1");
-              //   if(!validate.image1){
-              //     setImage1(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setImage1(value);
@@ -355,11 +310,6 @@ function CreateNewSpot() {
               type="text"
               placeholder="Image URL"
               value={image2}
-              // onChange={(e) => { validations(e.target.value, "image2");
-              //   if(!validate.image2){
-              //     setImage2(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setImage2(value);
@@ -373,11 +323,6 @@ function CreateNewSpot() {
               type="text"
               placeholder="Image URL"
               value={image3}
-              // onChange={(e) => { validations(e.target.value, "image3");
-              //   if(!validate.image3){
-              //     setImage3(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setImage3(value);
@@ -391,11 +336,6 @@ function CreateNewSpot() {
               type="text"
               placeholder="Image URL"
               value={image4}
-              // onChange={(e) => { validations(e.target.value, "image4");
-              //   if(!validate.image4){
-              //     setImage4(e.target.value);
-              //   }
-              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 setImage4(value);

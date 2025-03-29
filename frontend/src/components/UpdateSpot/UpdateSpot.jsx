@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-// import { fetchOneSpotThunk } from '../../store/spots';
 import { fetchOneSpotThunk, updateSpotThunk } from '../../store/spots';
 import './UpdateSpot.css';
 
 function UpdateSpot() {
-    //console.log("we innnnnnn");
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const currentUser = useSelector(state => state.session.user);
@@ -28,7 +26,6 @@ function UpdateSpot() {
     const [image4, setImage4] = useState("");
 
     useEffect(() => {
-        //console.log("useeffect1");
         dispatch(fetchOneSpotThunk(spotId));
 
     }, [dispatch, spotId]);
@@ -98,7 +95,7 @@ function UpdateSpot() {
     };
 
     useEffect(() => {
-        //console.log("useeffect2");
+
         if (spot) {
             setCountry(spot.country);
             setAddress(spot.address);
@@ -114,9 +111,8 @@ function UpdateSpot() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        //let newPrice = 122;
         const updatedSpotData = { country, address, city, state, description, name, price, previewImage };
-        //console.log("spotID, updatedSPOT :::----", spotId, updatedSpot);
+
         if (currentUser && (spot.Owner.id === currentUser.id)) {
             const updatedSpot = await dispatch(updateSpotThunk(spotId, updatedSpotData));
             navigate(`/spots/${updatedSpot.id}`);
@@ -134,16 +130,10 @@ function UpdateSpot() {
               <h2>Wheres your place located?</h2>
               <p>Guests will only get your exact address once they booked a reservation.</p>
               <label className="spot-input">
-                {/* <p className="spot-title-input">Country</p> */}
                 <input
                   type="text"
                   placeholder="Country"
                   value={country}
-                  // onChange={(e) => { validations(e.target.value, "country");
-                  //   if(!validate.country){
-                  //     setCountry(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setCountry(value);
@@ -159,16 +149,10 @@ function UpdateSpot() {
               </label>
     
               <label className="spot-input">
-                {/* <p className="spot-title-input">Street Address</p> */}
                 <input
                   type="text"
                   placeholder="Street Address"
                   value={address}
-                  // onChange={(e) => { validations(e.target.value, "address");
-                  //   if(!validate.address){
-                  //     setAddress(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setAddress(value);
@@ -184,16 +168,10 @@ function UpdateSpot() {
               </label>
     
               <label className="spot-input">
-                {/* <p className="spot-title-input">City</p> */}
                 <input
                   type="text"
                   placeholder="City"
                   value={city}
-                  // onChange={(e) => { validations(e.target.value, "city");
-                  //   if(!validate.city){
-                  //     setCity(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setCity(value);
@@ -209,16 +187,10 @@ function UpdateSpot() {
               </label>
     
               <label className="spot-input">
-                {/* <p className="spot-title-input">State</p> */}
                 <input
                   type="text"
                   placeholder="State"
                   value={state}
-                  // onChange={(e) => { validations(e.target.value, "state");
-                  //   if(!validate.state){
-                  //     setState(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setState(value);
@@ -237,15 +209,9 @@ function UpdateSpot() {
               <h2>Describe your place to guests</h2>
               <p>Mention the best features of your space, any special amentities like fast wifi or parking, and what you love about the neighborhood.</p>
               <label className="spot-input">
-                {/* <p className="spot-title-input">Description</p> */}
                 <textarea
                   placeholder="Please write at least 30 characters"
                   value={description}
-                  // onChange={(e) => { validations(e.target.value, "description");
-                  //   if(!validate.description){
-                  //     setDescription(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setDescription(value);
@@ -264,16 +230,10 @@ function UpdateSpot() {
               <h2>Create a title for your spot</h2>
               <p>Catch guests attention with a spot title that highlights what makes your place special.</p>
               <label className="spot-input">
-                {/* <p className="spot-title-input">Name for Spot</p> */}
                 <input
                   type="text"
                   placeholder="Name of your spot"
                   value={name}
-                  // onChange={(e) => { validations(e.target.value, "name");
-                  //   if(!validate.name){
-                  //     setName(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setName(value);
@@ -292,16 +252,10 @@ function UpdateSpot() {
               <h2>Set a base price for your spot</h2>
               <p>Competitive pricing can help your listing stand out and rank higher in search results.</p>
               <label className="spot-input">
-                {/* <p className="spot-title-input">Price</p> */}
                 <input
                   type="number"
                   placeholder="Price per night (USD)"
                   value={price}
-                  // onChange={(e) => { validations(e.target.value, "price");
-                  //   if(!validate.price){
-                  //     setPrice(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setPrice(value);
@@ -320,16 +274,10 @@ function UpdateSpot() {
               <h2>Liven up your spot with photos</h2>
               <p>Submit a link to at least one photo to publish your spot.</p>
               <label className="spot-input">
-                {/* <p className="spot-title-input">PreviewImage</p> */}
                 <input
                   type="text"
                   placeholder="Preview Image URL"
                   value={previewImage}
-                  // onChange={(e) => { validations(e.target.value, "previewImage");
-                  //   if(!validate.previewImage){
-                  //     setPreviewImage(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setPreviewImage(value);
@@ -344,74 +292,46 @@ function UpdateSpot() {
                 })()}
               </label>
               <label className="spot-input">
-                {/* <p className="spot-title-input">PreviewImage</p> */}
                 <input
                   type="text"
                   placeholder="Image URL"
                   value={image1}
-                  // onChange={(e) => { validations(e.target.value, "image1");
-                  //   if(!validate.image1){
-                  //     setImage1(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setImage1(value);
-                    // validations(value, "image1");
                   }}
                 />
               </label>
               <label className="spot-input">
-                {/* <p className="spot-title-input">PreviewImage</p> */}
                 <input
                   type="text"
                   placeholder="Image URL"
                   value={image2}
-                  // onChange={(e) => { validations(e.target.value, "image2");
-                  //   if(!validate.image2){
-                  //     setImage2(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setImage2(value);
-                    // validations(value, "image2");
                   }}
                 />
               </label>
               <label className="spot-input">
-                {/* <p className="spot-title-input">PreviewImage</p> */}
                 <input
                   type="text"
                   placeholder="Image URL"
                   value={image3}
-                  // onChange={(e) => { validations(e.target.value, "image3");
-                  //   if(!validate.image3){
-                  //     setImage3(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setImage3(value);
-                    // validations(value, "image3");
                   }}
                 />
               </label>
               <label className="spot-input">
-                {/* <p className="spot-title-input">PreviewImage</p> */}
                 <input
                   type="text"
                   placeholder="Image URL"
                   value={image4}
-                  // onChange={(e) => { validations(e.target.value, "image4");
-                  //   if(!validate.image4){
-                  //     setImage4(e.target.value);
-                  //   }
-                  // }}
                   onChange={(e) => {
                     const value = e.target.value;
                     setImage4(value);
-                    // validations(value, "image4");
                   }}
                 />
               </label>

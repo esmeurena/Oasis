@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import './CreateReviewModal.css';
 
 const CreateReviewModal = ({ displayPopup, closePopup, addReviewButton }) => {
   const [review, setReview] = useState('');
   const [stars, setStars] = useState(0);
+  const navigate = useNavigate();
 
   const resetDataAndClose = () => {
 

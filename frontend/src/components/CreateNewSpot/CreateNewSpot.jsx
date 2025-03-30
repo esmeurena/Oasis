@@ -98,7 +98,7 @@ function CreateNewSpot() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isValid = Object.keys(validate).length === 0;
+    const isValid = validations();
 
     if(!isValid){
       return;
@@ -115,7 +115,7 @@ function CreateNewSpot() {
     <div>
       <h1>Create a New Spot</h1>
 
-      <button onClick={stopWastingTime}>Stop Wasting Time</button>
+      {/* <button onClick={stopWastingTime}>Stop Wasting Time</button> */}
 
       <form onSubmit={handleSubmit}>
         <div>

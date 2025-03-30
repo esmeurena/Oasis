@@ -27,11 +27,17 @@ const CurrentSpotsComponent = ({ spot }) => {
     const verifyUserToDeleteSpot = () => {
         if (currentUser && (spot.Owner.id === currentUser.id)) {
             setDeleteSpotPopup(true);
+        }else{
+            alert("You are not the owner of this spot");
         }
     }
 
     const updateSpotLink = async () => {
-        navigate(`/spots/${spot.id}/update`);
+        if (currentUser && (spot.Owner.id === currentUser.id)) {
+            navigate(`/spots/${spot.id}/update`);
+        }else{
+            alert("You are not the owner of this spot");
+        }
     }
 
     return (

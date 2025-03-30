@@ -59,35 +59,29 @@ const deleteSpotAction = (spot) => {
 
 export const createSpotThunk = (userSpotInput) => async (dispatch) => {
   let { country, address, city, state, description, name, price, previewImage } = userSpotInput;
-  //console.log("before price", price);
+
   price = parseInt(price);
-  //console.log("after price", price);
   let lat = 3, lng = 3;
+  
   const response = await csrfFetch("/api/spots", {
     method: "POST",
     body: JSON.stringify({ address, city, state, country, lat, lng, name, description, price, previewImage })
   });
-  //console.log("response ---", response);
 
   const data = await response.json();
-  //console.log("data ---", data);
-  dispatch(createSpotAction(data));//try data.Spots
-  //console.log("SHOULD HAVE CHANGES", data);
-  //dispatch(getSpotsAction([data]));
+  dispatch(createSpotAction(data));
   return data;
 };
 
 export const fetchAllSpotsThunk = () => async (dispatch) => {
   const response = await csrfFetch("/api/spots");
-  // console.log("FROM BACKEND GETALLSPOTS::: ", response);
   const data = await response.json();
-  dispatch(getSpotsAction(data));//data.Spots)); // data));
+  dispatch(getSpotsAction(data));
   return response;
 };
 
 export const fetchOneSpotThunk = (spotId) => async (dispatch) => {
   try {
-    //console.log("fetchone::: ", spotId);
     const response = await csrfFetch(`/api/spots/${spotId}`);
     if (response.ok) {
       const data = await response.json();
@@ -100,10 +94,8 @@ export const fetchOneSpotThunk = (spotId) => async (dispatch) => {
 };
 
 export const updateSpotThunk = (spotId, updatedSpot) => async (dispatch) => {
-  //console.log("WE DO GO INSIDE THUNK ----::");
   let { country, address, city, state, description, name, price, previewImage } = updatedSpot;
   price = parseInt(price)
-  //console.log("ummmmmmmm -- ",country, address, city, state, description, name, price, previewImage);
   let lat = 3, lng = 3;
   const response = await csrfFetch(`/api/spots/${spotId}`, {
     method: "PUT",
@@ -117,22 +109,18 @@ export const updateSpotThunk = (spotId, updatedSpot) => async (dispatch) => {
 
 export const getCurrentSpotsThunk = () => async (dispatch) => {
   const response = await csrfFetch("/api/spots/current");
-  // console.log("FROM BACKEND GETALLSPOTS::: ", response);
   const data = await response.json();
-  dispatch(getCurrentSpotsAction(data));//data.Spots)); // data));
+  dispatch(getCurrentSpotsAction(data));
   return response;
 };
 
 export const deleteSpotThunk = (spotId) => async (dispatch) => {
-  //console.log("this one ~~~~~");
   const response = await csrfFetch(`/api/spots/${spotId}`, {
     method: "DELETE"
   });
 
   if (response.ok) {
-    //const data = await response.json();
     dispatch(deleteSpotAction(spotId));
-    //return data;
   }
 }
 
@@ -146,7 +134,6 @@ const spotReducer = (state = initialState, action) => {
   switch (action.type) {
 
     case GET_ALL_SPOTS:
-      //console.log("actionnnnn ----", action.payload);
       newState = { ...state };
       newState.allSpots = action.payload.Spots;
 
@@ -158,7 +145,6 @@ const spotReducer = (state = initialState, action) => {
       return newState;
 
     case GET_A_SPOT:
-      //console.log("actionnnnn ----", action.payload);
       newState = { ...state };
       newState.allSpots = [action.payload];
 
@@ -166,7 +152,6 @@ const spotReducer = (state = initialState, action) => {
       return newState;
 
     case POST_A_SPOT:
-      //console.log("action: ---", action.payload);
       newState = { ...state };
       newState.allSpots = [...newState.allSpots, action.payload];
 
@@ -175,12 +160,10 @@ const spotReducer = (state = initialState, action) => {
       return newState;
 
     case UPDATE_A_SPOT:
-      //console.log("action ---: "action.payload);
       newState = { ...state };
       newState.allSpots = [...newState.allSpots, action.payload];
 
       newState.byId = { ...newState.byId, [action.payload.id]: action.payload };
-      //newState.byId[action.payload.id] = action.payload;
       return newState;
 
     case GET_CURRENT_SPOTS:
@@ -197,7 +180,6 @@ const spotReducer = (state = initialState, action) => {
 
     case DELETE_A_SPOT:
       newState = { ...state };
-      //newState.allSpots = [];
 
       for(let spot of newState.allSpots){
         if(spot.id !== action.payload){
@@ -208,11 +190,6 @@ const spotReducer = (state = initialState, action) => {
 
       newState.allSpots = newAllSpots;
 
-      // newState.allSpots = newById;
-      // for(let spot of action.payload.Spots){
-      //   newById[spot.id] = spot
-      // }
-      // newState.byId = newById;
       delete newState.byId[action.payload];
 
       return newState;

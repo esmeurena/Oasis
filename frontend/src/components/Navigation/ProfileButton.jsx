@@ -44,7 +44,8 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button onClick={toggleMenu}>
+      <button className="user-circle" onClick={toggleMenu}>
+        <span className="three-lines">☰</span>
         <FaUserCircle />
       </button>
       <ul className={ulClassName} ref={ulRef}>
@@ -54,7 +55,7 @@ function ProfileButton({ user }) {
               <p>{user.username}</p>
               <p>{user.firstName} {user.lastName}</p>
               <p>{user.email}</p>
-                {/* <Link to="/spots/newSpot" className="cute-font-button">Create a New Spot</Link> */}
+              {/* <Link to="/spots/newSpot" className="cute-font-button">Create a New Spot</Link> */}
             </div>
             <div>
               <Link to="/spots/spotManagement" className="cute-font-button">Manage Spots</Link>

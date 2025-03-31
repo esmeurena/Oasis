@@ -75,8 +75,8 @@ const SingleSpotComponent = ({ spot }) => {
 
     return (
         <div>
-            <h2 className="cute-font-title">{spot.name}</h2>
-            <div>
+            <div className="father-div">
+                <h2 className="cute-font-title">{spot.name}</h2>
                 <div className="location-review">
                     <p className="cute-font-text">{spot.city}, {spot.state}, {spot.country}</p>
                     {/* <p className="cute-font-text">{spot.aveReview}</p> */}
@@ -117,6 +117,33 @@ const SingleSpotComponent = ({ spot }) => {
                 </div>
                 {<p>Hosted by {spot.Owner.firstName}, {spot.Owner.lastName}</p>}
                 <p className="cute-font-text">{spot.description}</p>
+                <div className="reserve-box">
+                    <h3 className="cute-font-title">{spot.price} / night</h3>
+                    <div>
+                        {(() => {//if(spot.aveReview) <= 0){
+                            if (parseFloat(spot.aveReview) <= 0) {
+                                return (
+                                    <p className="cute-font-text">★ New</p>
+                                )
+                            } else if (parseFloat(spot.aveReview) > 0 && reviewArray.length === 1) {
+                                return (
+                                    <div className="side-by-side">
+                                        <p className="cute-font-text">{reviewArray.length} Review • </p>
+                                        <p className="cute-font-text">★ {parseFloat(spot.aveReview).toFixed(1)}</p>
+                                    </div>
+                                )
+                            } else if (parseFloat(spot.aveReview) > 0 && reviewArray.length > 1) {
+                                return (
+                                    <div className="side-by-side">
+                                        <p className="cute-font-text">{reviewArray.length} Reviews • </p>
+                                        <p className="cute-font-text">★ {parseFloat(spot.aveReview).toFixed(1)}</p>
+                                    </div>
+                                )
+                            }
+                        })()}
+                        <button>Reserve!</button>
+                    </div>
+                </div>
                 <h2 className="cute-font">Reviews</h2>
                 <div>
                     {(() => {

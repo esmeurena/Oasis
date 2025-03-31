@@ -6,11 +6,16 @@ h1 {
 
 .spot-container-list {
   display: grid;
-  grid: auto-flow / 1fr 1fr 1fr 1fr;
-  /* grid: 200px / auto-flow;
-  flex-direction: row;
-  flex-wrap: wrap; */
-  gap: 10px;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 15px;
   width: 100%;
-  height: 100%;
+  padding-left: 150px;
+  padding-right: 150px;
+  padding-top: 20px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.individual-spot{
+  cursor: pointer;
 }

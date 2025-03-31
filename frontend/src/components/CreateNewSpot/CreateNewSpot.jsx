@@ -37,59 +37,59 @@ function CreateNewSpot() {
   const validations = () => {
     const displayValidation = { ...validate };
 
-    if(!country || country.length > 30 || country.length < 1){
+    if (!country || country.length > 30 || country.length < 1) {
       displayValidation.country = "Country is empty or must be between 1 and 30 characters";
     } else {
       delete displayValidation.country;
     }
 
-    if(!address || address.length > 100 || address.length < 4 ){
+    if (!address || address.length > 100 || address.length < 4) {
       displayValidation.address = "Street address is empty or must be between 4 and 100 characters";
-    }else{
+    } else {
       delete displayValidation.address;
     }
 
-    if(!city || city.length > 30 || city.length < 1){
+    if (!city || city.length > 30 || city.length < 1) {
       displayValidation.city = "City is empty or must be between 1 and 30 characters";
-    }else{
+    } else {
       delete displayValidation.city;
     }
 
-    if(!state || state.length < 1 || state.length > 30){
+    if (!state || state.length < 1 || state.length > 30) {
       displayValidation.state = "State is empty or or must be between 1 than 30 characters";
-    }else{
+    } else {
       delete displayValidation.state;
     }
 
-    if(!description || description.length < 30 || description.length > 256){
+    if (!description || description.length < 30 || description.length > 256) {
       displayValidation.description = "Description is empty or must be between 30 and 256 characters";
-    }else{
+    } else {
       delete displayValidation.description;
     }
 
-    if(!name || name.length < 1 || name.length > 50){
+    if (!name || name.length < 1 || name.length > 50) {
       displayValidation.name = "Name is empty or must be between 1 and 50 characters";
-    }else{
+    } else {
       delete displayValidation.name;
     }
 
-    if(!price || price < 1){
+    if (!price || price < 1) {
       displayValidation.price = "Price is empty or must be more than 0";
-    }else{
+    } else {
       delete displayValidation.price;
     }
 
-    if(!previewImage){
+    if (!previewImage) {
       displayValidation.previewImage = "Preview Image is empty";
-    }else{
+    } else {
       delete displayValidation.previewImage;
     }
 
     let noError = true;
-    for(let validationMessage of Object.values(displayValidation)){
-      if(validationMessage){
+    for (let validationMessage of Object.values(displayValidation)) {
+      if (validationMessage) {
         noError = false;
-        break; 
+        break;
       }
     }
     setValidate(displayValidation);
@@ -100,7 +100,7 @@ function CreateNewSpot() {
     e.preventDefault();
     const isValid = validations();
 
-    if(!isValid){
+    if (!isValid) {
       return;
     }
     const spotData = { country, address, city, state, description, name, price, previewImage };
@@ -118,7 +118,7 @@ function CreateNewSpot() {
       {/* <button onClick={stopWastingTime}>Stop Wasting Time</button> */}
 
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="create-spot-div">
           <h2>Wheres your place located?</h2>
           <p>Guests will only get your exact address once they booked a reservation.</p>
           <label className="spot-input">
@@ -135,7 +135,7 @@ function CreateNewSpot() {
               required
             />
             {(() => {
-              if(validate.country){
+              if (validate.country) {
                 return <div> {validate.country} </div>;
               }
             })()}
@@ -155,7 +155,7 @@ function CreateNewSpot() {
               required
             />
             {(() => {
-              if(validate.address){
+              if (validate.address) {
                 return <div> {validate.address} </div>;
               }
             })()}
@@ -175,7 +175,7 @@ function CreateNewSpot() {
               required
             />
             {(() => {
-              if(validate.city){
+              if (validate.city) {
                 return <div> {validate.city} </div>;
               }
             })()}
@@ -195,13 +195,13 @@ function CreateNewSpot() {
               required
             />
             {(() => {
-              if(validate.state){
+              if (validate.state) {
                 return <div> {validate.state} </div>;
               }
             })()}
           </label>
         </div>
-        <div>
+        <div className="create-spot-div">
           <h2>Describe your place to guests</h2>
           <p>Mention the best features of your space, any special amentities like fast wifi or parking, and what you love about the neighborhood.</p>
           <label className="spot-input">
@@ -217,13 +217,13 @@ function CreateNewSpot() {
               required
             />
             {(() => {
-              if(validate.description){
+              if (validate.description) {
                 return <div> {validate.description} </div>;
               }
             })()}
           </label>
         </div>
-        <div>
+        <div className="create-spot-div">
           <h2>Create a title for your spot</h2>
           <p>Catch guests attention with a spot title that highlights what makes your place special.</p>
           <label className="spot-input">
@@ -240,13 +240,13 @@ function CreateNewSpot() {
               required
             />
             {(() => {
-              if(validate.name){
+              if (validate.name) {
                 return <div> {validate.name} </div>;
               }
             })()}
           </label>
         </div>
-        <div>
+        <div className="create-spot-div">
           <h2>Set a base price for your spot</h2>
           <p>Competitive pricing can help your listing stand out and rank higher in search results.</p>
           <label className="spot-input">
@@ -263,13 +263,13 @@ function CreateNewSpot() {
               required
             />
             {(() => {
-              if(validate.price){
+              if (validate.price) {
                 return <div> {validate.price} </div>;
               }
             })()}
           </label>
         </div>
-        <div>
+        <div className="create-spot-div">
           <h2>Liven up your spot with photos</h2>
           <p>Submit a link to at least one photo to publish your spot.</p>
           <label className="spot-input">
@@ -286,7 +286,7 @@ function CreateNewSpot() {
               required
             />
             {(() => {
-              if(validate.previewImage){
+              if (validate.previewImage) {
                 return <div> {validate.previewImage} </div>;
               }
             })()}
@@ -346,7 +346,9 @@ function CreateNewSpot() {
 
         </div>
 
-        <button type="submit">Create Spot</button>
+        <div className="create-spot-div">
+          <button type="submit">Create Spot</button>
+        </div>
       </form>
     </div >
   );

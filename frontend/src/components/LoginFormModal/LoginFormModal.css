@@ -1,0 +1,29 @@
+.log-in {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.log-in-text {
+    background-color: rgb(255, 240, 250);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+button {
+    padding: 10px;
+    background-color: rgb(253, 208, 255);
+    border: none;
+    cursor: pointer;
+}

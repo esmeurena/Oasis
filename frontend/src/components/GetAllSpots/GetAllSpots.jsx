@@ -43,7 +43,7 @@ const GetAllSpots = () => {
         <div className="spot-container-list">
           {
             allSpotsArray.map((spot, idx) => (
-              <div
+              <div className="individual-spot"
                 key={`${idx}-${spot.id}`}
                 onClick={(e)=>goToSpotDetail(e,spot)}
                 >

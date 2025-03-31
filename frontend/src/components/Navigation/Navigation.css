@@ -1,6 +1,6 @@
 .nav-link {
     color: rgb(88, 88, 88);
-    padding: 20px;
+    padding:8px;
     text-decoration: none;
     font-family: "Outfit", sans-serif;
     font-optical-sizing: auto;
@@ -10,32 +10,64 @@
 }
 
 .nav-link:hover {
-    background-color: lightgray;
-  }
+    background-color: rgb(255, 233, 250);
+}
+
+.off-to-right {
+    width: 100% ;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.new-spot-link{
+    color: rgb(88, 88, 88);
+    padding:8px;
+    text-decoration: none;
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 17px;
+    justify-content: right;
+}
+
+.new-spot-link:hover {
+    background-color: rgb(255, 233, 250);
+
+}
 
 .navigation {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 15px;
-    margin-bottom: 15px;
     width: 100%;
+    background-color: rgb(254, 248, 249);
+}
+
+.oasis-text {
+    color: rgb(88, 88, 88);
+    padding:3px;
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: inherit;
+    font-style: normal;
+    font-size: 21px;
+    margin-top: 20px;
+}
+
+.oasis-nav {
+    display: flex;
+    align-items: center;
+    margin-left: 150px;
 }
 
 .oasis-logo {
-    width: 50px;
+    width: 35px;
 }
 
-.navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgb(254, 248, 249);
-}
-.center-options {
-    display: flex;
-    
-    justify-content: center;
-    flex-grow: 1;
-    margin-top: 10px;
+.profile-button{
+    margin-right: 150px;
 }

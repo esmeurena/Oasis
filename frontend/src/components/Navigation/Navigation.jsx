@@ -8,24 +8,28 @@ function Navigation({ isLoaded }) {
 
   return (
     <nav className="navigation">
-      <div>
-        <img src="/dist/orange_logo.png" className="oasis-logo" />
-      </div>
-      <div className="center-options">
-        <NavLink to="/" className="nav-link">Home</NavLink>
-        {/* <NavLink to="/spots" className="nav-link">Get All Spots</NavLink> */}
+      <div className="oasis-nav">
+        <NavLink to="/" className="nav-link">
+          <img src="/dist/orange_logo.png" className="oasis-logo" />
+        </NavLink>
+
+        <p className="oasis-text">oasis</p>
+
       </div>
       <div className="off-to-right">
         {sessionUser && (
-          <NavLink to="/spots/newSpot" className="nav-link">
+          <NavLink to="/spots/newSpot" className="new-spot-link">
             Create a New Spot
           </NavLink>
         )}
       </div>
 
       {isLoaded && (
-        <div className="profile-button">
-          <ProfileButton user={sessionUser} />
+        <div className="profile-nav">
+          
+          <div className="profile-button">
+            <ProfileButton user={sessionUser} />
+          </div>
         </div>
       )}
     </nav>
